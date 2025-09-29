@@ -8,7 +8,7 @@ nav:
     - ADRs Index: architecture/decisions/index.md
   - Contracts:
     - OpenAPI v1 Changelog: contracts/openapi/v1/CHANGELOG.md
-    - Events v1 Changelog: contracts/events/v1/CHANGELOG.md
+#    - Events v1 Changelog: contracts/events/v1/CHANGELOG.md
   - Governance:
     - Scope CHANGELOG: governance/scope-CHANGELOG.md
     - Product CHANGELOG: governance/product-CHANGELOG.md
