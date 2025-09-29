@@ -29,3 +29,7 @@ markdown_extensions:
   - footnotes
 plugins:
   - search
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js
+  - assets/js/mermaid-init.js
