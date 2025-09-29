@@ -13,11 +13,11 @@ flowchart TB
     Domain[Domain Model Hexagonal]
     Adapters[Adapters: PG, RMQ, FX Provider, Excel]
   end
-FE -->|HTTPS| APIv1
-APIv1 --> App --> Domain
-Adapters --> PG[(PostgreSQL)]
-Adapters --> RMQ[(RabbitMQ)]
-Adapters --> FX[FX Provider SPI]
-APIv1 --> OTel[OTel SDK] --> Prom[Prometheus] --> Graf[Grafana]
+  FE -->|HTTPS| APIv1
+  APIv1 --> App --> Domain
+  Adapters --> PG[(PostgreSQL)]
+  Adapters --> RMQ[(RabbitMQ)]
+  Adapters --> FX[FX Provider SPI]
+  APIv1 --> OTel[OTel SDK] --> Prom[Prometheus] --> Graf[Grafana]
 
 ```
