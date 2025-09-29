@@ -2,6 +2,7 @@
 
 
 ```mermaid
+
 flowchart TB
 subgraph Frontend
 FE[Next.js App Router]
