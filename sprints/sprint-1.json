@@ -1,0 +1,100 @@
+[
+  {
+    "title": "[SPR1-001] Run MkDocs locally via Docker",
+    "body": "Objective: levantar la documentación local sin depender de pip/venv.\n\nDoD:\n- Servicio `docs` en docker-compose con imagen `squidfunk/mkdocs-material:latest`.\n- Makefile: `docs-up`/`docs-down`/`docs-build`.\n- README actualizado con quickstart por Docker.\n\nChecklist:\n- [ ] Compose con `command: serve -a 0.0.0.0:8000`\n- [ ] Volumen root->/docs (o ajustar si mkdocs.yml no está en raíz)\n- [ ] README con URL local\n\nAcceptance:\n- `docker compose up docs` sirve en http://127.0.0.1:8000\n\nEstimate: 1 pt",
+    "labels": ["area/docs","module/docs","type/chore","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-002] Repo toolchain: Makefile, pre-commit, Conventional Commits, PR template",
+    "body": "Objective: estandarizar flujo devex.\n\nDoD:\n- Makefile con `up/down/test/lint/format`.\n- githooks o pre-commit para format/lint.\n- `.github/PULL_REQUEST_TEMPLATE.md` con checklist de ADR/CHANGELOG/Contracts.\n- Documentado en README.\n\nAcceptance:\n- Un PR nuevo muestra el template y pasa hooks locales.\n\nEstimate: 2 pts",
+    "labels": ["area/ops","module/devex","type/chore","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-003] Minimal CI workflow: build + unit tests",
+    "body": "Objective: CI básico en GitHub Actions.\n\nDoD:\n- Workflow que ejecuta build, linters y tests.\n- Cache de dependencias para velocidad.\n\nAcceptance:\n- El pipeline corre en cada PR a `main` y es verde.\n\nEstimate: 2 pts",
+    "labels": ["area/ops","module/ci","type/chore","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-004] OpenAPI v1 scaffold: tenants, accounts, banks, transactions",
+    "body": "Objective: contrato inicial /v1 para CRUDs base (stubs).\n\nDoD:\n- `docs/contracts/openapi/v1/openapi.yaml` con paths: /v1/tenants, /v1/accounts, /v1/banks, /v1/transactions.\n- Respuestas Problem Details (RFC7807) y cabecera `Idempotency-Key` en mutaciones.\n- CHANGELOG de OpenAPI actualizado.\n\nAcceptance:\n- Validación `openapi` sin errores.\n\nEstimate: 3 pts",
+    "labels": ["area/api","module/contracts","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-005] Tenant & User aggregates (in-memory) con RBAC básico",
+    "body": "Objective: modelar tenant y usuarios con roles OWNER/ADMIN/USER.\n\nDoD:\n- Agregados de dominio y puertos en memoria.\n- Invariantes: usuario OWNER al crear tenant.\n- Endpoints stub conectados a app services.\n\nAcceptance (Gherkin):\n```\nGiven auth simulada\nWhen POST /v1/tenants\nThen se crea tenant con UUID y el solicitante es OWNER\n```\n\nEstimate: 3 pts",
+    "labels": ["area/tenant","module/user","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-006] Account aggregate (currency enforced: USD/EUR/COP)",
+    "body": "Objective: cuentas CHECKING/SAVINGS con moneda fija.\n\nDoD:\n- Agregado cuenta con validaciones de moneda.\n- Unicidad (tenantId, accountName) en capa app (por ahora).\n- Endpoints stub `POST/GET /v1/accounts`.\n\nAcceptance:\n- No se permite cuenta con moneda fuera de {USD, EUR, COP}.\n\nEstimate: 3 pts",
+    "labels": ["area/account","module/account","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-007] Bank entity + API stub (in-memory)",
+    "body": "Objective: entidad banco por tenant y endpoints CRUD.\n\nDoD:\n- Modelo `bank` con name, code, metadata por tenant.\n- `/v1/banks` (create/list/get/delete) en memoria.\n\nAcceptance:\n- Un banco creado es visible sólo para su tenant.\n\nEstimate: 2 pts",
+    "labels": ["area/bank","module/bank","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-008] Transactions API stub con bankId + Idempotency-Key",
+    "body": "Objective: exponer /v1/transactions (in-memory) incluyendo bankId.\n\nDoD:\n- DTO con accountId, bankId, amount, currency, bookingDate, sourceId.\n- Idempotencia por (route, Idempotency-Key) en memoria.\n\nAcceptance (Gherkin):\n```\nGiven un bankId válido\nWhen POST /v1/transactions con Idempotency-Key\nThen responde 201 y la segunda petición devuelve 200 con mismo body\n```\n\nEstimate: 3 pts",
+    "labels": ["area/transaction","module/transaction","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-009] DTO validation + Problem Details (RFC7807) unificado",
+    "body": "Objective: validaciones Bean Validation y manejo de errores uniforme.\n\nDoD:\n- Anotaciones en DTOs (min/max, patterns, fechas ISO-8601, moneda).\n- `@ControllerAdvice` para RFC7807.\n\nAcceptance:\n- Un POST inválido retorna 400 con `application/problem+json` y `traceId`.\n\nEstimate: 2 pts",
+    "labels": ["area/api","module/core","type/chore","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-010] Unit tests de dominio (tenant/account/bank/transaction stub)",
+    "body": "Objective: cobertura ≥70% en lógica de dominio del sprint.\n\nDoD:\n- Tests de invariantes y happy paths.\n- Sin flaky tests; nombres claros.\n\nAcceptance:\n- CI muestra cobertura ≥70% para paquetes de dominio tocados.\n\nEstimate: 3 pts",
+    "labels": ["area/testing","module/domain","type/test","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-011] Contract test para POST /v1/accounts y /v1/transactions",
+    "body": "Objective: semilla de CDC para endpoints clave.\n\nDoD:\n- Consumer-side test o Spring Cloud Contract base.\n- Verifica status codes, headers (Idempotency-Key), shape de respuesta.\n\nAcceptance:\n- Los stubs pasan el contrato en CI.\n\nEstimate: 2 pts",
+    "labels": ["area/testing","module/contracts","type/test","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-012] Health endpoints + smoke test",
+    "body": "Objective: endpoint `/health` y smoke test en CI.\n\nDoD:\n- Actuator health (o simple `/health` custom) activo en dev.\n- Script de smoke que verifica 200 OK.\n\nAcceptance:\n- `make test` ejecuta smoke localmente; CI también.\n\nEstimate: 1 pt",
+    "labels": ["area/observability","module/api","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-013] Security headers + dependencia de escaneo baseline",
+    "body": "Objective: endurecer baseline de seguridad desde el inicio.\n\nDoD:\n- Filtros para headers: CSP básica (report-only opcional), HSTS, X-Content-Type-Options, Referrer-Policy.\n- Job de escaneo de dependencias (Trivy/OWASP dep check) en CI.\n\nAcceptance:\n- Respuestas incluyen headers en dev.\n- CI publica resultado del escaneo.\n\nEstimate: 2 pts",
+    "labels": ["area/security","module/security","type/chore","prio/should"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-014] Seed de ADRs + Scope CHANGELOG inicial",
+    "body": "Objective: consolidar ADR-000..005 y scope-CHANGELOG.\n\nDoD:\n- Archivos en `/docs/architecture/decisions/` y `/docs/governance/`.\n- PR template checklist referenciando estos docs.\n\nAcceptance:\n- MkDocs muestra ADR index y scope-CHANGELOG.\n\nEstimate: 1 pt",
+    "labels": ["area/docs","module/architecture","type/chore","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  }
+]
