@@ -16,3 +16,9 @@ Welcome! This site documents the architecture, contracts, and governance for the
 pip install mkdocs mkdocs-material
 mkdocs serve
 # open http://127.0.0.1:8000
+```
+
+## Contributing
+- Use Conventional Commits.
+- For breaking API/event changes: open an ADR and update contract changelogs.
+- Keep diagrams and examples minimal and testable.
