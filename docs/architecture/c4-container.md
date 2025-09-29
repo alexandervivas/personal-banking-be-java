@@ -10,7 +10,7 @@ flowchart TB
   subgraph Backend with Spring Boot
     APIv1[REST Controllers /v1]
     App[Application Services]
-    Domain[Domain Model (Hex)]
+    Domain[Domain Model Hexagonal]
     Adapters[Adapters: PG, RMQ, FX Provider, Excel]
   end
 FE -->|HTTPS| APIv1
