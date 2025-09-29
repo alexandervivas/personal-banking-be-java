@@ -600,13 +600,13 @@
 
 <h1 id="c4-system-context">C4 — System Context<a class="headerlink" href="#c4-system-context" title="Permanent link">&para;</a></h1>
 <div class="highlight"><pre><span></span><code>flowchart LR
-User[End User] --&gt;|Web| NextJS[Next.js Frontend]
-NextJS --&gt;|REST /v1| API[Spring Boot API]
-API --&gt;|JDBC| PG[(PostgreSQL)]
-API --&gt;|AMQP| RMQ[(RabbitMQ)]
-API --&gt;|OTEL| OTel[OTel Collector]
-OTel --&gt; Prom[Prometheus]
-Prom --&gt; Graf[Grafana]
+  User[End User] --&gt;|Web| NextJS[Next.js Frontend]
+  NextJS --&gt;|REST /v1| API[Spring Boot API]
+  API --&gt;|JDBC| PG[(PostgreSQL)]
+  API --&gt;|AMQP| RMQ[(RabbitMQ)]
+  API --&gt;|OTEL| OTel[OTel Collector]
+  OTel --&gt; Prom[Prometheus]
+  Prom --&gt; Graf[Grafana]
 </code></pre></div>
 
 
