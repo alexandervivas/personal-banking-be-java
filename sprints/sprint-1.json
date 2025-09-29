@@ -50,4 +50,51 @@
   },
   {
     "title": "[SPR1-008] Transactions API stub with bankId + Idempotency-Key",
-    "body": "Objective: expose /v1/transactions (in-memory) including bankId.\n\nDoD:\n- DTO: accountId, bankId, amount, currency, bookingDate, sourceId.\n- Idempotency by (route, Idempotency-Key) in-memory.\n\nAcceptance (Gherkin):\n```\nGiven a valid bankId\nWhen POST /v1/transactions with Idempotency-Key\nThen the first call returns 201 and the second returns 200 with the same body\n```\n\nEstimate: 3 pt
+    "body": "Objective: expose /v1/transactions (in-memory) including bankId.\n\nDoD:\n- DTO: accountId, bankId, amount, currency, bookingDate, sourceId.\n- Idempotency by (route, Idempotency-Key) in-memory.\n\nAcceptance (Gherkin):\n```\nGiven a valid bankId\nWhen POST /v1/transactions with Idempotency-Key\nThen the first call returns 201 and the second returns 200 with the same body\n```\n\nEstimate: 3 pts",
+    "labels": ["area/transaction","module/transaction","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-009] DTO validation + unified Problem Details (RFC7807)",
+    "body": "Objective: Bean Validation and uniform error handling.\n\nDoD:\n- DTO annotations (size, pattern, ISO-8601 dates, currency).\n- `@ControllerAdvice` returning RFC7807 with `traceId`.\n\nAcceptance:\n- Invalid POST returns 400 `application/problem+json` with `traceId`.\n\nEstimate: 2 pts",
+    "labels": ["area/api","module/core","type/chore","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-010] Domain unit tests (tenant/account/bank/transaction stub)",
+    "body": "Objective: ≥70% coverage for domain logic touched in this sprint.\n\nDoD:\n- Invariant + happy path tests.\n- No flaky tests; descriptive names.\n\nAcceptance:\n- CI shows ≥70% coverage for domain packages modified.\n\nEstimate: 3 pts",
+    "labels": ["area/testing","module/domain","type/test","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-011] Contract test for POST /v1/accounts and /v1/transactions",
+    "body": "Objective: seed CDC for core endpoints.\n\nDoD:\n- Consumer-side test or Spring Cloud Contract stub.\n- Verify status codes, Idempotency-Key header, response shape.\n\nAcceptance:\n- Stubs pass in CI.\n\nEstimate: 2 pts",
+    "labels": ["area/testing","module/contracts","type/test","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-012] Health endpoint + smoke test",
+    "body": "Objective: `/health` endpoint and simple smoke test in CI.\n\nDoD:\n- Spring Actuator health (or custom `/health`) enabled in dev.\n- Smoke script verifying 200 OK.\n\nAcceptance:\n- `make test` runs smoke locally; CI too.\n\nEstimate: 1 pt",
+    "labels": ["area/observability","module/api","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-013] Security headers + dependency scan baseline",
+    "body": "Objective: establish a security baseline.\n\nDoD:\n- Response headers: CSP (report-only OK in dev), HSTS, X-Content-Type-Options, Referrer-Policy.\n- Dependency scan (Trivy or OWASP dep check) in CI.\n\nAcceptance:\n- Dev responses include headers.\n- CI publishes scan results.\n\nEstimate: 2 pts",
+    "labels": ["area/security","module/security","type/chore","prio/should"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-014] Seed ADRs + initial Scope CHANGELOG",
+    "body": "Objective: consolidate ADR-000..005 and scope-CHANGELOG.\n\nDoD:\n- Files under `/docs/architecture/decisions/` and `/docs/governance/` present.\n- PR template checklist references them.\n\nAcceptance:\n- MkDocs shows ADR index and scope CHANGELOG.\n\nEstimate: 1 pt",
+    "labels": ["area/docs","module/architecture","type/chore","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  }
+]
