@@ -609,12 +609,12 @@
     Domain[Domain Model Hexagonal]
     Adapters[Adapters: PG, RMQ, FX Provider, Excel]
   end
-FE --&gt;|HTTPS| APIv1
-APIv1 --&gt; App --&gt; Domain
-Adapters --&gt; PG[(PostgreSQL)]
-Adapters --&gt; RMQ[(RabbitMQ)]
-Adapters --&gt; FX[FX Provider SPI]
-APIv1 --&gt; OTel[OTel SDK] --&gt; Prom[Prometheus] --&gt; Graf[Grafana]
+  FE --&gt;|HTTPS| APIv1
+  APIv1 --&gt; App --&gt; Domain
+  Adapters --&gt; PG[(PostgreSQL)]
+  Adapters --&gt; RMQ[(RabbitMQ)]
+  Adapters --&gt; FX[FX Provider SPI]
+  APIv1 --&gt; OTel[OTel SDK] --&gt; Prom[Prometheus] --&gt; Graf[Grafana]
 </code></pre></div>
 
 
