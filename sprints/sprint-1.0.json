@@ -96,5 +96,19 @@
     "labels": ["area/docs","module/architecture","type/chore","prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-015] Define Stitch prompt + Figma storyboard for onboarding & core UI",
+    "body": "Objective: produce a high-quality prompt for Stitch to generate screens, and a Figma storyboard covering onboarding and core features aligned with our architecture and constraints.\n\nDeliverables (DoD)\n- A single, copy-paste Stitch prompt (in the issue) generating:\n  (1) Landing, (2) Auth (Auth0 Universal vs Custom), (3) Tenant setup,\n  (4) Onboarding wizard (accounts, currencies, inline bank create tenant-scoped),\n  (5) Dashboard (native + EUR/COP equivalents), (6) Transactions import,\n  (7) Account detail (historical FX), (8) Loading/empty/error states.\n- Figma file URL with named frames and a clickable onboarding prototype.\n- Design tokens JSON for Tailwind/CSS variables.\n- Accessibility notes (WCAG 2.1 AA) and i18n EN/ES keys.\n\nAcceptance Criteria\n- Inline bank creation in combobox persists immediately and is tenant-scoped.\n- No separate banks CRUD page; creation occurs within flows.\n- Responsive specs and state variants present.\n\nSuccess Metrics\n- Onboarding path completable in < 3 minutes in prototype.\n- ≤ 30% manual edits required from Stitch output.\n\nPROMPT\n[Paste the long English prompt from the issue body here]\n",
+    "labels": ["area/ux","module/design","type/feature","prio/should"],
+    "assignees": [],
+    "milestone": "Iteration 1"
+  },
+  {
+    "title": "[SPR1-016] Spike: Auth0 Universal Login vs Custom sign-up",
+    "body": "Compare UX/dev effort/security/compliance.\n\nOutput: ADR-007 with the chosen approach and theming notes for Universal Login (if chosen).\n\nEstimate: 2 pts.",
+    "labels": ["area/security", "module/auth", "prio/should", "type/spike"],
+    "assignees": [],
+    "milestone": "Iteration 1"
   }
 ]

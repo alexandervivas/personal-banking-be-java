@@ -1,0 +1,121 @@
+[
+  {
+    "title": "[SPR2-001] Flyway migrations for tenant/account/bank/transaction (reversible + indexes)",
+    "body": "Objective: persist core schema.\n\nDoD:\n- Create Flyway scripts for tables: tenant, user(tenant-scoped), bank, account, transaction, idempotency_keys.\n- Reversible where feasible; baseline version tagged.\n- Critical indexes: (tenant_id, bank_id, booking_date), (tenant_id, account_id, booking_date), unique (tenant_id, source_id) for transactions, unique (route, key) for idempotency.\n\nAcceptance:\n- `mvn -q -DskipTests exec:java` (or app startup) applies migrations locally.\n- Testcontainers integration confirms schema present.\n\nEstimate: 3 pts",
+    "labels": ["area/db","module/migrations","type/chore","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-002] Implement JPA repositories + Testcontainers (PostgreSQL)",
+    "body": "Objective: wire persistence layer with tests.\n\nDoD:\n- Repositories for tenant, user, bank, account, transaction, idempotency keys.\n- Testcontainers PG integration tests for basic CRUD and constraints.\n\nAcceptance:\n- CI runs integration tests against Testcontainers and they pass.\n\nEstimate: 3 pts",
+    "labels": ["area/db","module/persistence","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-003] Persistent Idempotency-Key store & HTTP filter",
+    "body": "Objective: move idempotency from in-memory to DB.\n\nDoD:\n- Table `idempotency_keys(route, key, response_hash, created_at)` with unique(route, key).\n- Spring filter/aspect storing key before handler; on duplicate, return stored response.\n- Update ADR-004 with persistence details.\n\nAcceptance:\n- Duplicate POST with same `Idempotency-Key` returns 200 and identical body.\n\nEstimate: 2 pts",
+    "labels": ["area/api","module/core","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-004] Excel ingestion MVP with bank association and sourceId dedupe",
+    "body": "Objective: import transactions from .xlsx.\n\nDoD:\n- Read .xlsx; minimal header mapping (manual selection for now).\n- Validate rows; persist transactions with (tenant_id, account_id, bank_id, source_id, amount, currency, booking_date, description).\n- Idempotent import via unique (tenant_id, source_id).\n- Return counts: inserted/ignored/failed.\n\nAcceptance:\n- Sample file of 500+ rows imports successfully; re-import reports ignored duplicates.\n\nEstimate: 3 pts",
+    "labels": ["area/transaction","module/ingestion","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-005] Sample datasets & deterministic seeds for ingestion tests",
+    "body": "Objective: have stable fixtures.\n\nDoD:\n- Place 2–3 sample Excel files under `test-resources/ingestion/` (different banks).\n- Seed factory methods for tenants/accounts/banks.\n\nAcceptance:\n- Integration tests reference fixtures; no network dependency.\n\nEstimate: 1 pt",
+    "labels": ["area/testing","module/ingestion","type/test","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-006] Update OpenAPI v1 (+CHANGELOG) to include bankId and transaction shapes",
+    "body": "Objective: keep contracts in sync with persistence.\n\nDoD:\n- Update `docs/contracts/openapi/v1/openapi.yaml` for /v1/transactions with `bankId`, `sourceId`, and full schemas.\n- Ensure Problem Details and `Idempotency-Key` documented.\n- Update contract CHANGELOG.\n\nAcceptance:\n- Spec validates; contract tests updated and pass.\n\nEstimate: 2 pts",
+    "labels": ["area/api","module/contracts","type/chore","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-007] FX provider SPI + stub implementation with day-rate cache",
+    "body": "Objective: enable historical conversions.\n\nDoD:\n- SPI: `getRate(LocalDate, from, to)`; cache by (date, pair).\n- Stub provider with deterministic rates for tests.\n- Config flag to select provider.\n\nAcceptance:\n- Unit tests show deterministic conversion for USD↔EUR↔COP on given dates.\n\nEstimate: 2 pts",
+    "labels": ["area/fx","module/fx","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-008] Balance API with EUR & COP equivalents (historical FX)",
+    "body": "Objective: expose balances in native currency plus EUR and COP.\n\nDoD:\n- Endpoint `GET /v1/accounts/{id}/balance?at=YYYY-MM-DD` (optional `at`, defaults to now).\n- Returns: native balance, EUR-equivalent, COP-equivalent; includes FX source and date used.\n\nAcceptance:\n- For a USD account with 100 USD on 2025-01-01, response includes converted EUR and COP using stub rates.\n\nEstimate: 3 pts",
+    "labels": ["area/reporting","module/reporting","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-009] End-to-end integration test: ingest → query balances (EUR/COP)",
+    "body": "Objective: prove the full flow.\n\nDoD:\n- Testcontainers: start PG; import sample Excel; call Balance API.\n- Assert native and converted balances match expectations.\n\nAcceptance:\n- Test passes in CI; logs show no SQL constraint violations.\n\nEstimate: 2 pts",
+    "labels": ["area/testing","module/integration","type/test","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-010] Migration tests: forward/backward compatibility",
+    "body": "Objective: ensure safe schema evolution.\n\nDoD:\n- Tests applying up migrations, then rolling back one step where feasible.\n- Verify data survives restarts.\n\nAcceptance:\n- CI job passes on clean DB and on pre-seeded DB.\n\nEstimate: 2 pts",
+    "labels": ["area/db","module/migrations","type/test","prio/should"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-011] ADR-006: Critical DB indexes for query patterns",
+    "body": "Objective: document indexing strategy.\n\nDoD:\n- New ADR describing chosen indexes and rationale (workload, filters, ordering).\n- Link to `EXPLAIN` examples from integration tests.\n\nAcceptance:\n- ADR committed; referenced from Scope CHANGELOG if changes are impactful.\n\nEstimate: 1 pt",
+    "labels": ["area/docs","module/architecture","type/chore","prio/should"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-012] Observability counters for ingestion (inserted/ignored/failed) + JSON logs",
+    "body": "Objective: baseline metrics and logs.\n\nDoD:\n- Counters for ingestion outcomes exposed via Prometheus.\n- Structured JSON logs include correlationId/tenantId.\n\nAcceptance:\n- Local `/metrics` shows counters after an import; logs include correlation id.\n\nEstimate: 2 pts",
+    "labels": ["area/observability","module/ingestion","type/feature","prio/should"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-013] DB roles and least-privilege connection for app",
+    "body": "Objective: security baseline for data layer.\n\nDoD:\n- Create DB role with minimum privileges required by the app; separate migration user vs app user.\n- Compose/env wired to use app role.\n\nAcceptance:\n- App boots and integration tests pass using the limited role.\n\nEstimate: 2 pts",
+    "labels": ["area/security","module/persistence","type/chore","prio/should"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-014] Docs update: Scope CHANGELOG + OpenAPI CHANGELOG + run/debug guide for ingestion",
+    "body": "Objective: keep docs current.\n\nDoD:\n- Update `docs/governance/scope-CHANGELOG.md` for Sprint 2 features.\n- Update `docs/contracts/openapi/v1/CHANGELOG.md` with new/changed fields.\n- Add a short run/debug guide for Excel ingestion to README or docs.\n\nAcceptance:\n- MkDocs site shows updated pages; links work.\n\nEstimate: 1 pt",
+    "labels": ["area/docs","module/docs","type/chore","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-015] Deploy API & Web to Render (Free) + managed Postgres",
+    "body": "Objective: live demo environment.\n\nDoD:\n- Connect repo to Render; enable auto-deploy from main.\n- API: Docker deploy; health check green.\n- Web: Next.js SSR service; env NEXT_PUBLIC_API_BASE_URL set.\n- Managed Postgres (Free) linked; DB schema applied on boot.\n\nAcceptance:\n- Public URLs respond; /health is 200; basic flow works end-to-end.\n\nEstimate: 3 pts",
+    "labels": ["area/ops","module/deploy","type/feature","prio/must"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-016] Seed & export scripts for Render Postgres (Free)",
+    "body": "Objective: mitigate 30-day DB expiry.\n\nDoD:\n- Seed runner (Java or SQL) to bootstrap minimal data.\n- Export script (pg_dump) and docs to restore quickly.\n- Nightly GitHub Action (cron) to build seed artifact (no secret dumps).\n\nAcceptance:\n- Seed/import works locally and in Render DB.\n\nEstimate: 2 pts",
+    "labels": ["area/db","module/migrations","type/chore","prio/should"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  },
+  {
+    "title": "[SPR2-017] Cold-start monitoring & demo keep-alive window",
+    "body": "Objective: visibility and optional mitigation of idle spin-down.\n\nDoD:\n- Metric: 'first-hit after idle P95' in logs/metrics.\n- Optional keep-alive during scheduled demo windows (e.g., GitHub Action workflow curl to /health every 10m, disabled by default).\n- Document ethical/ToS considerations; do not run 24/7 keep-alive.\n\nAcceptance:\n- Dashboard panel shows first-hit latency distribution.\n\nEstimate: 1 pt",
+    "labels": ["area/observability","module/deploy","type/chore","prio/could"],
+    "assignees": [],
+    "milestone": "Iteration 2"
+  }
+]
