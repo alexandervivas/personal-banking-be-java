@@ -3,17 +3,17 @@ repo_url: https://example.com/your/repo
 nav:
   - Overview: index.md
   - Architecture:
-    - Context: docs/architecture/c4-context.md
-    - Containers: docs/architecture/c4-container.md
-    - ADRs Index: docs/architecture/decisions/index.md
+    - Context: architecture/c4-context.md
+    - Containers: architecture/c4-container.md
+    - ADRs Index: architecture/decisions/index.md
   - Contracts:
-    - OpenAPI v1 Changelog: docs/contracts/openapi/v1/CHANGELOG.md
-    - Events v1 Changelog: docs/contracts/events/v1/CHANGELOG.md
+    - OpenAPI v1 Changelog: contracts/openapi/v1/CHANGELOG.md
+    - Events v1 Changelog: contracts/events/v1/CHANGELOG.md
   - Governance:
-    - Scope CHANGELOG: docs/governance/scope-CHANGELOG.md
-    - Product CHANGELOG: docs/governance/product-CHANGELOG.md
-    - Security: docs/governance/SECURITY.md
-    - SLOs & SLIs: docs/governance/SLOs-SLIs.md
+    - Scope CHANGELOG: governance/scope-CHANGELOG.md
+    - Product CHANGELOG: governance/product-CHANGELOG.md
+    - Security: governance/SECURITY.md
+    - SLOs & SLIs: governance/SLOs-SLIs.md
 theme:
   name: material
 markdown_extensions:
