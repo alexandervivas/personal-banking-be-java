@@ -3,14 +3,7 @@ set -euo pipefail
 
 # Usage:
 #   scripts/create_issues.sh -f sprints/sprint-1.json [-r owner/repo] [-m "Iteration 1"] [--dry-run]
-#
-# If -r is not provided, tries to infer from `git remote origin`.
-# If -m is not provided, uses each issue's "milestone" from the JSON.
-#
-# JSON format: array of objects with fields:
-#   title, body, labels (array of strings), assignees (array, optional), milestone (string)
 
-# --- CLI args ---
 REPO=""
 MILESTONE_OVERRIDE=""
 JSON_FILE=""
@@ -31,40 +24,36 @@ if [[ -z "${JSON_FILE}" ]]; then
   exit 1
 fi
 
-# --- prerequisites ---
-command -v gh >/dev/null 2>&1 || { echo "Error: gh CLI is required (https://cli.github.com/)"; exit 1; }
-command -v jq >/dev/null 2>&1 || { echo "Error: jq is required"; exit 1; }
-if ! gh auth status >/dev/null 2>&1; then
-  echo "Error: gh is not authenticated. Run: gh auth login"
-  exit 1
-fi
+command -v gh >/dev/null || { echo "Error: gh CLI required"; exit 1; }
+command -v jq >/dev/null || { echo "Error: jq required"; exit 1; }
+gh auth status >/dev/null || { echo "Error: gh not authenticated. Run: gh auth login"; exit 1; }
 
-# --- resolve repo ---
+# Resolve repo
 if [[ -z "${REPO}" ]]; then
-  origin_url="$(git config --get remote.origin.url || true)"
-  if [[ -z "${origin_url}" ]]; then
-    echo "Error: cannot infer repo. Pass -r owner/repo"
-    exit 1
-  fi
-  # handle ssh and https remotes
-  if [[ "${origin_url}" =~ ^git@github.com:(.+)/(.+)\.git$ ]]; then
-    REPO="${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
-  elif [[ "${origin_url}" =~ ^https://github.com/(.+)/(.+)\.git$ ]]; then
-    REPO="${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
-  elif [[ "${origin_url}" =~ ^https://github.com/(.+)/(.+)$ ]]; then
-    REPO="${BASHREMATCH[1]}/${BASHREMATCH[2]}"
-  else
-    echo "Error: unrecognized remote URL '${origin_url}'. Pass -r owner/repo"
-    exit 1
+  REPO="$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || true)"
+  if [[ -z "${REPO}" ]]; then
+    origin_url="$(git config --get remote.origin.url || true)"
+    if [[ -z "${origin_url}" ]]; then
+      echo "Error: cannot infer repo. Pass -r owner/repo"
+      exit 1
+    fi
+    if [[ "${origin_url}" =~ ^git@github.com:(.+)/(.+)\.git$ ]]; then
+      REPO="${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
+    elif [[ "${origin_url}" =~ ^https://github.com/(.+)/(.+)(\.git)?$ ]]; then
+      REPO="${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
+    else
+      echo "Error: unrecognized remote URL '${origin_url}'. Pass -r owner/repo"
+      exit 1
+    fi
   fi
 fi
-
 echo "Using repo: ${REPO}"
 
-# --- helpers ---
+# Helpers
+urlencode() { jq -nr --arg s "$1" '$s|@uri'; }
+
 label_color() {
-  local name="$1"
-  case "$name" in
+  case "$1" in
     area/*) echo "1f6feb" ;;      # blue
     module/*) echo "b6e3ff" ;;    # light blue
     type/feature) echo "2ea44f" ;;# green
@@ -79,35 +68,27 @@ label_color() {
 
 ensure_label() {
   local label="$1"
-  # Check existence
-  if gh api --silent "repos/${REPO}/labels/$(python3 - <<EOF
-import urllib.parse,sys
-print(urllib.parse.quote(sys.argv[1]))
-EOF
-"${label}")" >/dev/null 2>&1; then
+  local enc; enc="$(urlencode "$label")"
+  if gh api --silent "repos/${REPO}/labels/${enc}" >/dev/null 2>&1; then
     return 0
   fi
-  # Create if missing
-  local color
-  color="$(label_color "$label")"
+  local color; color="$(label_color "$label")"
   echo "Creating label '${label}' (${color})"
+  # Create; ignore 422 if already exists (race)
   gh api -X POST "repos/${REPO}/labels" \
     -f name="$label" -f color="$color" \
-    -f description="Auto-created by create_issues.sh" >/dev/null
+    -f description="Auto-created by create_issues.sh" >/dev/null 2>&1 || true
 }
 
-# Cache milestone numbers by title
 declare -A MILESTONE_MAP
-
 ensure_milestone() {
   local title="$1"
   if [[ -n "${MILESTONE_MAP[$title]+x}" ]]; then
-    echo "${MILESTONE_MAP[$title]}"
-    return 0
+    echo "${MILESTONE_MAP[$title]}"; return 0
   fi
-  # Try to find
   local number
-  number="$(gh api "repos/${REPO}/milestones?state=all&per_page=100" | jq -r ".[] | select(.title==\"${title}\") | .number" | head -n1 || true)"
+  number="$(gh api "repos/${REPO}/milestones?state=all&per_page=100" \
+            | jq -r ".[] | select(.title==\"${title}\") | .number" | head -n1 || true)"
   if [[ -z "$number" ]]; then
     echo "Creating milestone '${title}'"
     number="$(gh api -X POST "repos/${REPO}/milestones" -f title="$title" | jq -r '.number')"
@@ -120,17 +101,10 @@ create_issue() {
   local title="$1" body="$2" milestone_title="$3" labels_json="$4" assignees_json="$5"
 
   local ms_title
-  if [[ -n "${MILESTONE_OVERRIDE}" ]]; then
-    ms_title="${MILESTONE_OVERRIDE}"
-  else
-    ms_title="${milestone_title}"
-  fi
+  if [[ -n "${MILESTONE_OVERRIDE}" ]]; then ms_title="${MILESTONE_OVERRIDE}"; else ms_title="${milestone_title}"; fi
   [[ -z "${ms_title}" ]] && ms_title="Backlog"
-
-  # Ensure milestone exists (and cache number)
   ensure_milestone "${ms_title}" >/dev/null
 
-  # Build label args
   local -a label_args=()
   if [[ -n "${labels_json}" && "${labels_json}" != "null" ]]; then
     mapfile -t labels < <(jq -r '.[]' <<< "${labels_json}")
@@ -141,7 +115,6 @@ create_issue() {
     done
   fi
 
-  # Build assignee args
   local -a assign_args=()
   if [[ -n "${assignees_json}" && "${assignees_json}" != "null" ]]; then
     mapfile -t assignees < <(jq -r '.[]' <<< "${assignees_json}")
@@ -165,7 +138,7 @@ create_issue() {
     "${assign_args[@]}"
 }
 
-# --- main ---
+# Main
 issues_len="$(jq 'length' "${JSON_FILE}")"
 echo "Creating ${issues_len} issue(s) from ${JSON_FILE} ..."
 
