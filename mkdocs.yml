@@ -1,0 +1,31 @@
+site_name: Personal Banking — Docs
+repo_url: https://example.com/your/repo
+nav:
+  - Overview: index.md
+  - Architecture:
+    - Context: docs/architecture/c4-context.md
+    - Containers: docs/architecture/c4-container.md
+    - ADRs Index: docs/architecture/decisions/index.md
+  - Contracts:
+    - OpenAPI v1 Changelog: docs/contracts/openapi/v1/CHANGELOG.md
+    - Events v1 Changelog: docs/contracts/events/v1/CHANGELOG.md
+  - Governance:
+    - Scope CHANGELOG: docs/governance/scope-CHANGELOG.md
+    - Product CHANGELOG: docs/governance/product-CHANGELOG.md
+    - Security: docs/governance/SECURITY.md
+    - SLOs & SLIs: docs/governance/SLOs-SLIs.md
+theme:
+  name: material
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.tabbed
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+plugins:
+  - search
