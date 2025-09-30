@@ -1,13 +1,10 @@
 # Security Policy
 
-
 ## Supported Versions
 Until 1.0.0, only the `main` branch receives fixes.
 
-
 ## Reporting a Vulnerability
-Please open a private security advisory or email the maintainers. Do not create public issues for vulnerabilities.
-
+Open a private security advisory or email the maintainers. Do not create public issues for vulnerabilities.
 
 ## Standards
 - OWASP ASVS Level 3

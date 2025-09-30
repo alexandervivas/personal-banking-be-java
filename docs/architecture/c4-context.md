@@ -1,6 +1,5 @@
 # C4 — System Context
 
-
 ```mermaid
 flowchart LR
   User[End User] -->|Web| NextJS[Next.js Frontend]
@@ -10,5 +9,4 @@ flowchart LR
   API -->|OTEL| OTel[OTel Collector]
   OTel --> Prom[Prometheus]
   Prom --> Graf[Grafana]
-
 ```
