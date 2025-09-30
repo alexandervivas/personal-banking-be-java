@@ -1,8 +1,6 @@
 # Architecture Decision Records (ADRs)
 
-
 This index lists all decisions. New ADRs append at the end. Superseded ADRs keep their files but are annotated.
-
 
 - ADR-000 — Architecture Style (Accepted)
 - ADR-001 — IDs & Time (Accepted)
@@ -10,3 +8,4 @@ This index lists all decisions. New ADRs append at the end. Superseded ADRs keep
 - ADR-003 — Message Versioning (Accepted)
 - ADR-004 — Idempotency Strategy (Accepted)
 - ADR-005 — Bank Attribution & Multi-currency Balances (Accepted)
+- ADR-007 — Hosting on Render Free Tier (Accepted)
