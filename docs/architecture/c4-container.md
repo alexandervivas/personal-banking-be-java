@@ -5,10 +5,10 @@ flowchart TB
   subgraph Frontend
     FE[Next.js App Router]
   end
-  subgraph Backend (Spring Boot)
+  subgraph Backend [Spring Boot]
     APIv1[REST Controllers /v1]
     App[Application Services]
-    Domain[Domain Model (Hex)]
+    Domain[Domain Model - Hex]
     Adapters[Adapters: PG, RMQ, FX Provider, Excel]
   end
   FE -->|HTTPS| APIv1
