@@ -2,14 +2,14 @@
   {
     "title": "[SPR1-017] ADR-007: Hosting on Render (Free tier) + SLO note",
     "body": "Objective: document hosting decision & constraints (DB expiry, cold starts).\n\nDoD:\n- Add ADR-007 capturing Render Free tier pros/cons and mitigations.\n- Update SLOs-SLIs.md to exclude cold-starts from latency SLO and track 'first-hit after idle'.\n- Update Scope CHANGELOG with hosting decision.\n\nAcceptance:\n- ADR merged and referenced from Scope CHANGELOG.\n\nEstimate: 1 pt",
-    "labels": ["area/ops","module/architecture","type/chore","prio/must"],
+    "labels": ["area/ops", "module/architecture", "type/chore", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-018] Render blueprint: render.yaml + service wiring",
     "body": "Objective: scaffold deploy to Render Free tier.\n\nDoD:\n- Add render.yaml (API Docker service, Web Node service, Free Postgres).\n- Health check path /health for API.\n- Document required env vars in README (NEXT_PUBLIC_API_BASE_URL, SPRING_DATASOURCE_URL via Render DB binding).\n\nAcceptance:\n- Render blueprint validates; services show 'pending connect' state.\n\nEstimate: 2 pts",
-    "labels": ["area/ops","module/deploy","type/feature","prio/should"],
+    "labels": ["area/ops", "module/deploy", "type/feature", "prio/should"],
     "assignees": [],
     "milestone": "Iteration 1"
   }

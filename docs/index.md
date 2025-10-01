@@ -1,10 +1,9 @@
 # Personal Banking — Developer Docs
 
-
 Welcome! This site documents the architecture, contracts, and governance for the Personal Banking project.
 
-
 ## Quick links
+
 - **Architecture**:
   - [C4 Context](architecture/c4-context.md)
   - [C4 Containers](architecture/c4-container.md)
@@ -16,8 +15,8 @@ Welcome! This site documents the architecture, contracts, and governance for the
   - [Scope CHANGELOG](governance/scope-CHANGELOG.md)
   - [Product CHANGELOG](governance/product-CHANGELOG.md)
 
-
 ## How to run docs locally
+
 ```bash
 pip install mkdocs mkdocs-material
 mkdocs serve
@@ -25,6 +24,7 @@ mkdocs serve
 ```
 
 ## Contributing
+
 - Use Conventional Commits.
 - For breaking API/event changes: open an ADR and update contract changelogs.
 - Keep diagrams and examples minimal and testable.
