@@ -12,8 +12,8 @@ paths:
           schema: { type: string }
           required: true
       responses:
-        '201': { description: Created }
-        '400': { description: Problem Details }
+        "201": { description: Created }
+        "400": { description: Problem Details }
   /v1/accounts:
     post:
       summary: Create account
@@ -23,7 +23,7 @@ paths:
           schema: { type: string }
           required: true
       responses:
-        '201': { description: Created }
+        "201": { description: Created }
   /v1/banks:
     post:
       summary: Create bank (tenant-scoped)
@@ -33,7 +33,7 @@ paths:
           schema: { type: string }
           required: true
       responses:
-        '201': { description: Created }
+        "201": { description: Created }
   /v1/transactions:
     post:
       summary: Create transaction (with bankId)
@@ -43,7 +43,7 @@ paths:
           schema: { type: string }
           required: true
       responses:
-        '201': { description: Created }
+        "201": { description: Created }
 components:
   schemas:
     Problem:

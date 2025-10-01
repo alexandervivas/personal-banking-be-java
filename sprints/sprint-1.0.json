@@ -2,105 +2,110 @@
   {
     "title": "[SPR1-001] Run MkDocs locally via Docker",
     "body": "Objective: run docs locally without pip/venv hassles.\n\nDoD:\n- docker-compose service `docs` using `squidfunk/mkdocs-material:latest`.\n- Makefile targets: `docs-up` / `docs-down` / `docs-build`.\n- README updated with Docker quickstart.\n\nAcceptance:\n- `docker compose up docs` serves http://127.0.0.1:8000\n\nEstimate: 1 pt",
-    "labels": ["area/docs","module/docs","type/chore","prio/must"],
+    "labels": ["area/docs", "module/docs", "type/chore", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-002] Repo toolchain: Makefile, pre-commit, Conventional Commits, PR template",
     "body": "Objective: baseline DevEx.\n\nDoD:\n- Makefile targets `up/down/test/lint/format`.\n- Local hooks or pre-commit for lint/format.\n- `.github/PULL_REQUEST_TEMPLATE.md` with ADR/CHANGELOG/Contracts checklist.\n- Documented in README.\n\nAcceptance:\n- New PR shows the template and passes local hooks.\n\nEstimate: 2 pts",
-    "labels": ["area/ops","module/devex","type/chore","prio/must"],
+    "labels": ["area/ops", "module/devex", "type/chore", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-003] Minimal CI workflow: build + unit tests",
     "body": "Objective: basic GitHub Actions CI.\n\nDoD:\n- Workflow runs build, linters and unit tests.\n- Dependency caching enabled.\n\nAcceptance:\n- Pipeline runs on each PR to `main` and is green.\n\nEstimate: 2 pts",
-    "labels": ["area/ops","module/ci","type/chore","prio/must"],
+    "labels": ["area/ops", "module/ci", "type/chore", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-004] OpenAPI v1 scaffold: tenants, accounts, banks, transactions",
     "body": "Objective: initial /v1 contract for baseline CRUD stubs.\n\nDoD:\n- `docs/contracts/openapi/v1/openapi.yaml` with paths: /v1/tenants, /v1/accounts, /v1/banks, /v1/transactions.\n- Problem Details (RFC7807).\n- `Idempotency-Key` header on mutations.\n- OpenAPI CHANGELOG updated.\n\nAcceptance:\n- Spec validates with no errors.\n\nEstimate: 3 pts",
-    "labels": ["area/api","module/contracts","type/feature","prio/must"],
+    "labels": ["area/api", "module/contracts", "type/feature", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-005] Tenant & User aggregates (in-memory) with basic RBAC",
     "body": "Objective: model tenant and users with roles OWNER/ADMIN/USER.\n\nDoD:\n- Domain aggregates and in-memory ports.\n- Invariant: creator gets OWNER on tenant creation.\n- Controller stubs wired to app services.\n\nAcceptance (Gherkin):\n```\nGiven simulated auth\nWhen POST /v1/tenants\nThen a tenant UUID is created and the caller is OWNER\n```\n\nEstimate: 3 pts",
-    "labels": ["area/tenant","module/user","type/feature","prio/must"],
+    "labels": ["area/tenant", "module/user", "type/feature", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-006] Account aggregate (currency enforced: USD/EUR/COP)",
     "body": "Objective: CHECKING/SAVINGS accounts with fixed currency.\n\nDoD:\n- Account aggregate with currency validation.\n- Uniqueness (tenantId, accountName) enforced in app layer (for now).\n- Stubs `POST/GET /v1/accounts`.\n\nAcceptance:\n- Reject currencies outside {USD, EUR, COP}.\n\nEstimate: 3 pts",
-    "labels": ["area/account","module/account","type/feature","prio/must"],
+    "labels": ["area/account", "module/account", "type/feature", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-007] Bank entity + API stub (in-memory)",
     "body": "Objective: bank entity per tenant with CRUD endpoints.\n\nDoD:\n- `bank` model with name, code, metadata; tenant-scoped.\n- `/v1/banks` (create/list/get/delete) in-memory.\n\nAcceptance:\n- Bank created is visible only to its tenant.\n\nEstimate: 2 pts",
-    "labels": ["area/bank","module/bank","type/feature","prio/must"],
+    "labels": ["area/bank", "module/bank", "type/feature", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-008] Transactions API stub with bankId + Idempotency-Key",
     "body": "Objective: expose /v1/transactions (in-memory) including bankId.\n\nDoD:\n- DTO: accountId, bankId, amount, currency, bookingDate, sourceId.\n- Idempotency by (route, Idempotency-Key) in-memory.\n\nAcceptance (Gherkin):\n```\nGiven a valid bankId\nWhen POST /v1/transactions with Idempotency-Key\nThen the first call returns 201 and the second returns 200 with the same body\n```\n\nEstimate: 3 pts",
-    "labels": ["area/transaction","module/transaction","type/feature","prio/must"],
+    "labels": [
+      "area/transaction",
+      "module/transaction",
+      "type/feature",
+      "prio/must"
+    ],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-009] DTO validation + unified Problem Details (RFC7807)",
     "body": "Objective: Bean Validation and uniform error handling.\n\nDoD:\n- DTO annotations (size, pattern, ISO-8601 dates, currency).\n- `@ControllerAdvice` returning RFC7807 with `traceId`.\n\nAcceptance:\n- Invalid POST returns 400 `application/problem+json` with `traceId`.\n\nEstimate: 2 pts",
-    "labels": ["area/api","module/core","type/chore","prio/must"],
+    "labels": ["area/api", "module/core", "type/chore", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-010] Domain unit tests (tenant/account/bank/transaction stub)",
     "body": "Objective: ≥70% coverage for domain logic touched in this sprint.\n\nDoD:\n- Invariant + happy path tests.\n- No flaky tests; descriptive names.\n\nAcceptance:\n- CI shows ≥70% coverage for domain packages modified.\n\nEstimate: 3 pts",
-    "labels": ["area/testing","module/domain","type/test","prio/must"],
+    "labels": ["area/testing", "module/domain", "type/test", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-011] Contract test for POST /v1/accounts and /v1/transactions",
     "body": "Objective: seed CDC for core endpoints.\n\nDoD:\n- Consumer-side test or Spring Cloud Contract stub.\n- Verify status codes, Idempotency-Key header, response shape.\n\nAcceptance:\n- Stubs pass in CI.\n\nEstimate: 2 pts",
-    "labels": ["area/testing","module/contracts","type/test","prio/must"],
+    "labels": ["area/testing", "module/contracts", "type/test", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-012] Health endpoint + smoke test",
     "body": "Objective: `/health` endpoint and simple smoke test in CI.\n\nDoD:\n- Spring Actuator health (or custom `/health`) enabled in dev.\n- Smoke script verifying 200 OK.\n\nAcceptance:\n- `make test` runs smoke locally; CI too.\n\nEstimate: 1 pt",
-    "labels": ["area/observability","module/api","type/feature","prio/must"],
+    "labels": ["area/observability", "module/api", "type/feature", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-013] Security headers + dependency scan baseline",
     "body": "Objective: establish a security baseline.\n\nDoD:\n- Response headers: CSP (report-only OK in dev), HSTS, X-Content-Type-Options, Referrer-Policy.\n- Dependency scan (Trivy or OWASP dep check) in CI.\n\nAcceptance:\n- Dev responses include headers.\n- CI publishes scan results.\n\nEstimate: 2 pts",
-    "labels": ["area/security","module/security","type/chore","prio/should"],
+    "labels": ["area/security", "module/security", "type/chore", "prio/should"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-014] Seed ADRs + initial Scope CHANGELOG",
     "body": "Objective: consolidate ADR-000..005 and scope-CHANGELOG.\n\nDoD:\n- Files under `/docs/architecture/decisions/` and `/docs/governance/` present.\n- PR template checklist references them.\n\nAcceptance:\n- MkDocs shows ADR index and scope CHANGELOG.\n\nEstimate: 1 pt",
-    "labels": ["area/docs","module/architecture","type/chore","prio/must"],
+    "labels": ["area/docs", "module/architecture", "type/chore", "prio/must"],
     "assignees": [],
     "milestone": "Iteration 1"
   },
   {
     "title": "[SPR1-015] Define Stitch prompt + Figma storyboard for onboarding & core UI",
     "body": "Objective: produce a high-quality prompt for Stitch to generate screens, and a Figma storyboard covering onboarding and core features aligned with our architecture and constraints.\n\nDeliverables (DoD)\n- A single, copy-paste Stitch prompt (in the issue) generating:\n  (1) Landing, (2) Auth (Auth0 Universal vs Custom), (3) Tenant setup,\n  (4) Onboarding wizard (accounts, currencies, inline bank create tenant-scoped),\n  (5) Dashboard (native + EUR/COP equivalents), (6) Transactions import,\n  (7) Account detail (historical FX), (8) Loading/empty/error states.\n- Figma file URL with named frames and a clickable onboarding prototype.\n- Design tokens JSON for Tailwind/CSS variables.\n- Accessibility notes (WCAG 2.1 AA) and i18n EN/ES keys.\n\nAcceptance Criteria\n- Inline bank creation in combobox persists immediately and is tenant-scoped.\n- No separate banks CRUD page; creation occurs within flows.\n- Responsive specs and state variants present.\n\nSuccess Metrics\n- Onboarding path completable in < 3 minutes in prototype.\n- ≤ 30% manual edits required from Stitch output.\n\nPROMPT\n[Paste the long English prompt from the issue body here]\n",
-    "labels": ["area/ux","module/design","type/feature","prio/should"],
+    "labels": ["area/ux", "module/design", "type/feature", "prio/should"],
     "assignees": [],
     "milestone": "Iteration 1"
   },

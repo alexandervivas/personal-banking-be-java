@@ -1,7 +1,9 @@
 ## Summary
+
 <what changed and why>
 
 ## Checklist
+
 - [ ] Updated **scope-CHANGELOG.md** (if scope or priorities changed)
 - [ ] Added/updated **ADR** (for decisions, or marked previous as superseded)
 - [ ] Updated **OpenAPI/Event** contract(s) + their **CHANGELOG.md**
@@ -9,4 +11,5 @@
 - [ ] Tests updated (unit/integration/CDC)
 
 ## Breaking changes
-- [ ] Yes (link ADR)  -or-  [ ] No
+
+- [ ] Yes (link ADR) -or- [ ] No
