@@ -2,25 +2,31 @@ name: docs-guard
 on:
   pull_request:
     types: [opened, synchronize, edited, reopened]
+
 jobs:
   guard:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
+
       - name: Detect breaking or contract changes
         id: diff
         run: |
           git fetch origin ${{ github.base_ref }} --depth=1
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          CHANGED_FILES="$(git diff --name-only origin/${{ github.base_ref }}...HEAD || true)"
           echo "$CHANGED_FILES" > changed.txt
-          echo "changed=$CHANGED_FILES" >> $GITHUB_OUTPUT
+          {
+            echo 'changed<<EOF'
+            echo "$CHANGED_FILES"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
 
       - name: Enforce ADR for breaking changes
         if: contains(steps.diff.outputs.changed, 'openapi') || contains(steps.diff.outputs.changed, 'events')
         run: |
           if git log -1 --pretty=%B | grep -E 'feat!|fix!|BREAKING CHANGE'; then
-            if ! grep -R "docs/architecture/decisions/ADR-" -n; then
+            if ! grep -R "docs/architecture/decisions/ADR-" -n .; then
               echo "Breaking change detected but no ADR found"; exit 1
             fi
           fi
