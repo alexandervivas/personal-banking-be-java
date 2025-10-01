@@ -8,7 +8,14 @@ API for the multi‑tenant Personal Banking project. **Java 21**, **Spring Boot
 
 ## Table of Contents
 
-- [Development Environment](#development-environment)\n* [First‑time Setup](#first-time-setup)\n* [Day‑to‑day Commands](#day-to-day-commands)\n* [Conventional Commits](#conventional-commits)\n* [Pull Request Template](#pull-request-template)\n* [Continuous Integration](#continuous-integration)\n* [Editor/IDE Tips](#editoride-tips)\n\* [Troubleshooting](#troubleshooting)
+- [Development Environment](#development-environment)
+- [First‑time Setup](#first-time-setup)
+- [Day‑to‑day Commands](#day-to-day-commands)
+- [Conventional Commits](#conventional-commits)
+- [Pull Request Template](#pull-request-template)
+- [Continuous Integration](#continuous-integration)
+- [Editor/IDE Tips](#editoride-tips)
+- [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -24,7 +31,7 @@ This repository contains the **API** only. Tooling and docs below reflect that.
 - **Node.js ≥ 18** (for local Conventional Commits validation via `commitlint`)
 - (Optional) **Docker** for local infra (used in later iterations)
 
-> **Why Node?** We use `commitlint` via `npx` to enforce **Conventional Commits** in the local `commit-msg` hook.
+> **Why Node?** We run **commitlint** via a pre-commit Node hook (`language: node`) with pinned dependencies; Node ≥ 18 is required.
 
 ### Tooling specifics
 
@@ -84,6 +91,8 @@ The local `commit-msg` hook validates messages. If it fails, amend:
 git commit --amend
 ```
 
+> **Note:** The default `subject-case` rule disallows UPPERCASE acronyms in the subject (e.g., `GJF`). Use lower-case (`gjf`) or avoid using acronyms altogether.
+
 ---
 
 ## Pull Request Template
@@ -127,6 +136,7 @@ Keep builds green; fix style/format issues locally with `make format`.
 - **CI fails on pre-commit** → run `make lint`, commit the fixes, push again.
 - **YAML constructor error in `mkdocs.yml`** → this file is excluded from the `check-yaml` hook because it uses `!!python/name:` for Mermaid. If you still see warnings, run `pre-commit clean && pre-commit install`.
 - **Java files not reformatted** → ensure the formatter script is executable (`chmod +x scripts/google-java-format.sh`). The JAR is cached under `.git-hooks-cache/`. Bump the version temporarily with `GJF_VERSION=1.23.0 pre-commit run --all-files`.
+- **Commit rejected by subject-case** → Amend with a compliant subject, e.g.: `git commit --amend -m "chore(tooling): add pre-commit, prettier, commitlint, and gjf"` or avoid using acronyms altogether.
 
 ---
 
