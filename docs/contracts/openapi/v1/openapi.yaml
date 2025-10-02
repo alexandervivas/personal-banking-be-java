@@ -476,6 +476,8 @@ components:
           type: string
         accountId:
           type: string
+        bankId:
+          type: string
         amount:
           type: number
           format: double
@@ -484,12 +486,15 @@ components:
       required:
         - id
         - accountId
+        - bankId
         - amount
         - currency
     TransactionCreate:
       type: object
       properties:
         accountId:
+          type: string
+        bankId:
           type: string
         amount:
           type: number
