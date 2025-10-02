@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../SECURITY/">
+        <link rel="prev" href="../SLOs-SLIs/">
       
       
-        <link rel="next" href="../AGENTS/">
+        <link rel="next" href="../../ux/stitch-prompt/">
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>SLOs & SLIs - Personal Banking — Docs</title>
+        <title>Agents Operating Manual - Personal Banking — Docs</title>
       
     
     
@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#slos-slis" class="md-skip">
+        <a href="#agentsmd-operating-manual-for-development-agents" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              SLOs & SLIs
+              Agents Operating Manual
             
           </span>
         </div>
@@ -727,6 +727,29 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../SLOs-SLIs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SLOs & SLIs
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -744,7 +767,7 @@
   
   
   <span class="md-ellipsis">
-    SLOs & SLIs
+    Agents Operating Manual
     
   </span>
   
@@ -757,7 +780,7 @@
   
   
   <span class="md-ellipsis">
-    SLOs & SLIs
+    Agents Operating Manual
     
   </span>
   
@@ -780,36 +803,219 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#objectives" class="md-nav__link">
+  <a href="#1-principles-goals" class="md-nav__link">
     <span class="md-ellipsis">
-      Objectives
+      1) Principles &amp; Goals
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#indicators-examples" class="md-nav__link">
+  <a href="#2-repository-facts-for-agents" class="md-nav__link">
     <span class="md-ellipsis">
-      Indicators (examples)
+      2) Repository Facts (for agents)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#promql-sketches" class="md-nav__link">
+  <a href="#3-roles-responsibilities-agents" class="md-nav__link">
     <span class="md-ellipsis">
-      PromQL sketches
+      3) Roles &amp; Responsibilities (Agents)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3) Roles &amp; Responsibilities (Agents)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-code-generation-agent-codex" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Code Generation Agent (Codex)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-test-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Test Agent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-docscontracts-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Docs/Contracts Agent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-security-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4 Security Agent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-ci-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.5 CI Agent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-releasedeploy-agent-later" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.6 Release/Deploy Agent (later)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-guardrails-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      4) Guardrails &amp; Constraints
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
+  <a href="#5-workflows-what-agents-do-stepbystep" class="md-nav__link">
     <span class="md-ellipsis">
-      Notes
+      5) Workflows (What agents do step‑by‑step)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5) Workflows (What agents do step‑by‑step)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-feature-or-bugfix" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 Feature or Bugfix
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-contract-change-openapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 Contract change (OpenAPI)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-database-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3 Database change
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.4 Observability
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-securitysensitive-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.5 Security‑sensitive change
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-pr-quality-gate-must-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      6) PR Quality Gate (must pass)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-file-directory-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      7) File &amp; Directory Policy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      8) Conventions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-commands-agents-may-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      9) Commands Agents May Use
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-safety-compliance" class="md-nav__link">
+    <span class="md-ellipsis">
+      10) Safety &amp; Compliance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-escalation-humanintheloop" class="md-nav__link">
+    <span class="md-ellipsis">
+      11) Escalation &amp; Human‑in‑the‑loop
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-change-control-for-agentsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      12) Change Control for AGENTS.md
     </span>
   </a>
   
@@ -819,29 +1025,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../AGENTS/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Agents Operating Manual
-    
-  </span>
-  
-
-      </a>
     </li>
   
 
@@ -1027,36 +1210,219 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#objectives" class="md-nav__link">
+  <a href="#1-principles-goals" class="md-nav__link">
     <span class="md-ellipsis">
-      Objectives
+      1) Principles &amp; Goals
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#indicators-examples" class="md-nav__link">
+  <a href="#2-repository-facts-for-agents" class="md-nav__link">
     <span class="md-ellipsis">
-      Indicators (examples)
+      2) Repository Facts (for agents)
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#promql-sketches" class="md-nav__link">
+  <a href="#3-roles-responsibilities-agents" class="md-nav__link">
     <span class="md-ellipsis">
-      PromQL sketches
+      3) Roles &amp; Responsibilities (Agents)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3) Roles &amp; Responsibilities (Agents)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-code-generation-agent-codex" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Code Generation Agent (Codex)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-test-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Test Agent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-docscontracts-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.3 Docs/Contracts Agent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-security-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.4 Security Agent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-ci-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.5 CI Agent
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-releasedeploy-agent-later" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.6 Release/Deploy Agent (later)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-guardrails-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      4) Guardrails &amp; Constraints
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes" class="md-nav__link">
+  <a href="#5-workflows-what-agents-do-stepbystep" class="md-nav__link">
     <span class="md-ellipsis">
-      Notes
+      5) Workflows (What agents do step‑by‑step)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5) Workflows (What agents do step‑by‑step)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-feature-or-bugfix" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.1 Feature or Bugfix
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-contract-change-openapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.2 Contract change (OpenAPI)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-database-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.3 Database change
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.4 Observability
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-securitysensitive-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      5.5 Security‑sensitive change
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-pr-quality-gate-must-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      6) PR Quality Gate (must pass)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-file-directory-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      7) File &amp; Directory Policy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      8) Conventions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-commands-agents-may-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      9) Commands Agents May Use
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-safety-compliance" class="md-nav__link">
+    <span class="md-ellipsis">
+      10) Safety &amp; Compliance
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-escalation-humanintheloop" class="md-nav__link">
+    <span class="md-ellipsis">
+      11) Escalation &amp; Human‑in‑the‑loop
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-change-control-for-agentsmd" class="md-nav__link">
+    <span class="md-ellipsis">
+      12) Change Control for AGENTS.md
     </span>
   </a>
   
@@ -1081,36 +1447,206 @@
   
 
 
-<h1 id="slos-slis">SLOs &amp; SLIs<a class="headerlink" href="#slos-slis" title="Permanent link">&para;</a></h1>
-<h2 id="objectives">Objectives<a class="headerlink" href="#objectives" title="Permanent link">&para;</a></h2>
+<h1 id="agentsmd-operating-manual-for-development-agents">AGENTS.md — Operating Manual for Development Agents<a class="headerlink" href="#agentsmd-operating-manual-for-development-agents" title="Permanent link">&para;</a></h1>
+<p>This document defines how automated and AI agents (e.g., Codex, linters, bots) participate in the <strong>Personal Banking API</strong> development lifecycle. It sets roles, workflows, guardrails, and quality gates so every agent action moves the project in the intended direction.</p>
+<blockquote>
+<p><strong>Scope:</strong> API‑only repository (Java 21, Spring Boot, <strong>Gradle</strong>, PostgreSQL). Frontend is out of scope for current iterations.</p>
+</blockquote>
+<hr />
+<h2 id="1-principles-goals">1) Principles &amp; Goals<a class="headerlink" href="#1-principles-goals" title="Permanent link">&para;</a></h2>
 <ul>
-<li>API P95 latency &lt; 200 ms (steady-state, <strong>excluding first-hit-after-idle on Render Free</strong>)</li>
-<li>Error rate &lt; 0.1%</li>
-<li>MTTR &lt; 30 min</li>
+<li><strong>API‑first:</strong> deliver a complete, secure, and stable API before UI.</li>
+<li><strong>Contract discipline:</strong> API/event changes are explicit, versioned, and documented.</li>
+<li><strong>Security by default:</strong> OWASP ASVS L3, least privilege, tenant isolation.</li>
+<li><strong>Observability:</strong> traces, metrics, and structured JSON logs are part of “done”.</li>
+<li><strong>Docs‑as‑code:</strong> ADRs, C4, OpenAPI, and governance live under <code>docs/</code>.</li>
 </ul>
-<h2 id="indicators-examples">Indicators (examples)<a class="headerlink" href="#indicators-examples" title="Permanent link">&para;</a></h2>
+<p><strong>SLO targets</strong> (steady‑state, Render Free cold‑start excluded):</p>
 <ul>
-<li>Request latency histogram → P95 (PromQL)</li>
-<li>Error ratio of 5xx over total</li>
-<li>DLQ depth for messaging (later when broker is hosted)</li>
-<li><strong>First-hit-after-idle P95</strong> (informational metric, not part of SLO)</li>
+<li>P95 latency &lt; <strong>200 ms</strong></li>
+<li>Error rate &lt; <strong>0.1%</strong></li>
+<li>MTTR &lt; <strong>30 min</strong></li>
 </ul>
-<h2 id="promql-sketches">PromQL sketches<a class="headerlink" href="#promql-sketches" title="Permanent link">&para;</a></h2>
+<hr />
+<h2 id="2-repository-facts-for-agents">2) Repository Facts (for agents)<a class="headerlink" href="#2-repository-facts-for-agents" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>API P95</strong>:
-  <div class="highlight"><pre><span></span><code>histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket{service=&quot;api&quot;}[5m])) by (le))
-</code></pre></div></li>
-<li><strong>Error rate</strong>:
-  <div class="highlight"><pre><span></span><code>sum(rate(http_server_requests_seconds_count{status=~&quot;5..&quot;}[5m])) / sum(rate(http_server_requests_seconds_count[5m]))
-</code></pre></div></li>
-<li><strong>Cold-start / first-hit-after-idle</strong> (example patterns):</li>
-<li>Option A: expose a dedicated histogram <code>app_cold_start_request_seconds_bucket</code> with label <code>reason="idle"</code> and chart P95.</li>
-<li>Option B: add a log/metric label <code>is_cold_start="true"</code> on the first request after idle and compute its P95 separately.</li>
+<li><strong>Language/Build:</strong> Java 21, Spring Boot, <strong>Gradle</strong>.</li>
+<li><strong>CI:</strong> GitHub Actions uses <code>gradle/actions/setup-gradle@v3</code> with a pinned version (no wrapper committed).</li>
+<li><strong>Tooling:</strong> <code>pre-commit</code>, commitlint (Node hook), Prettier (Node hook), Google Java Format (local JAR script <code>scripts/google-java-format.sh</code>).</li>
+<li><strong>Docs:</strong> MkDocs; <code>mkdocs.yml</code> uses Python constructor tags and is <strong>excluded</strong> from the YAML check.</li>
+<li><strong>Contracts:</strong> <code>docs/contracts/openapi/v1/openapi.yaml</code> (+ <code>CHANGELOG.md</code>).</li>
+<li><strong>ADRs:</strong> <code>docs/architecture/decisions/</code></li>
+<li><strong>Governance:</strong> <code>docs/governance/</code></li>
+<li><strong>Deployment notes:</strong> <code>docs/ops/deployment-render.md</code></li>
 </ul>
-<h2 id="notes">Notes<a class="headerlink" href="#notes" title="Permanent link">&para;</a></h2>
+<hr />
+<h2 id="3-roles-responsibilities-agents">3) Roles &amp; Responsibilities (Agents)<a class="headerlink" href="#3-roles-responsibilities-agents" title="Permanent link">&para;</a></h2>
+<h3 id="31-code-generation-agent-codex">3.1 Code Generation Agent (Codex)<a class="headerlink" href="#31-code-generation-agent-codex" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Render Free may <strong>idle/suspend</strong> services. We explicitly <strong>exclude</strong> these cold-start latencies from the steady-state latency SLO, but we <strong>track and visualize</strong> them to set user expectations during demos.</li>
-<li>Document demo windows if using optional keep-alive pings; do <strong>not</strong> run persistent keep-alive.</li>
+<li>Implements small, well‑scoped changes in Java 21 with Spring Boot.</li>
+<li>Writes/updates tests (unit/integration). Use <strong>Testcontainers</strong> for DB.</li>
+<li>Ensures tenant scoping, idempotency, UTC time, bean validation, pagination defaults.</li>
+<li>Runs locally before PR: <code>gradle test</code> → <code>pre-commit run --all-files</code>.</li>
+</ul>
+<h3 id="32-test-agent">3.2 Test Agent<a class="headerlink" href="#32-test-agent" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Maintains test coverage (goal ≥ 70% core logic) and <strong>no flaky tests</strong>.</li>
+<li>Provides deterministic seeds/fixtures (e.g., Excel samples).</li>
+<li>Verifies idempotency, historical FX conversions (USD/EUR/COP), and <strong>bank attribution</strong> per transaction.</li>
+</ul>
+<h3 id="33-docscontracts-agent">3.3 Docs/Contracts Agent<a class="headerlink" href="#33-docscontracts-agent" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>When code changes API surface, <strong>update both</strong>:</p>
+</li>
+<li>
+<p><code>docs/contracts/openapi/v1/openapi.yaml</code> and <code>docs/contracts/openapi/v1/CHANGELOG.md</code>.</p>
+</li>
+<li>
+<p>Relevant ADRs and <code>docs/governance/scope-CHANGELOG.md</code>.</p>
+</li>
+<li>
+<p>Keep C4 diagrams and docs consistent (do not break Mermaid behavior).</p>
+</li>
+</ul>
+<h3 id="34-security-agent">3.4 Security Agent<a class="headerlink" href="#34-security-agent" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Enforces tenant isolation at service/repository layers.</li>
+<li>Validates OAuth2 Resource Server (JWT) config (when present), CORS allow‑list, and rate limiting.</li>
+<li>Ensures PII redaction in logs and least‑privilege DB roles.</li>
+</ul>
+<h3 id="35-ci-agent">3.5 CI Agent<a class="headerlink" href="#35-ci-agent" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Keeps <code>.github/workflows/ci.yml</code> aligned with <code>setup-gradle</code>.</li>
+<li>Ensures CI runs: Java 21 setup → <code>gradle test</code> → <code>pre-commit run --all-files</code>.</li>
+<li>May add caching but <strong>must not</strong> weaken checks or skip tests.</li>
+</ul>
+<h3 id="36-releasedeploy-agent-later">3.6 Release/Deploy Agent (later)<a class="headerlink" href="#36-releasedeploy-agent-later" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Manages tagging/release notes and Render deployment notes. <strong>Never</strong> auto‑merge to <code>main</code>.</li>
+</ul>
+<blockquote>
+<p><strong>Rule:</strong> No agent pushes to <code>main</code> directly. Use PRs + human review.</p>
+</blockquote>
+<hr />
+<h2 id="4-guardrails-constraints">4) Guardrails &amp; Constraints<a class="headerlink" href="#4-guardrails-constraints" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Security:</strong> OWASP ASVS L3 posture; no secrets in repo; env‑based configs only.</li>
+<li><strong>IDs &amp; Time:</strong> UUID PKs; timestamps in <strong>UTC</strong> (<code>java.time</code>).</li>
+<li><strong>Tenant isolation:</strong> every read/write must filter by <code>tenant_id</code>; cross‑tenant access returns 403/404 without data leak.</li>
+<li><strong>Idempotency:</strong> mutating endpoints require <code>Idempotency-Key</code>; persist <code>(route, key, response_hash)</code>; ingestion dedupe on <code>(tenant_id, source_id)</code>.</li>
+<li><strong>Performance:</strong> avoid N+1 queries; define critical indexes in ADR; respect pagination defaults.</li>
+<li><strong>Logging:</strong> structured JSON; include correlation/tenant IDs; no secrets/PII.</li>
+<li><strong>Style:</strong> formatting enforced by pre‑commit (Prettier + Google Java Format script).</li>
+</ul>
+<p><strong>Forbidden</strong> (agents must never):</p>
+<ul>
+<li>Introduce external network calls at build/test time without ADR justification.</li>
+<li>Commit credentials, private keys, or production endpoints.</li>
+<li>Bypass pre‑commit/CI gates or force‑push to <code>main</code>.</li>
+</ul>
+<hr />
+<h2 id="5-workflows-what-agents-do-stepbystep">5) Workflows (What agents do step‑by‑step)<a class="headerlink" href="#5-workflows-what-agents-do-stepbystep" title="Permanent link">&para;</a></h2>
+<h3 id="51-feature-or-bugfix">5.1 Feature or Bugfix<a class="headerlink" href="#51-feature-or-bugfix" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Create a branch: <code>feat/&lt;scope&gt;-&lt;short&gt;</code> or <code>fix/&lt;scope&gt;-&lt;short&gt;</code>.</li>
+<li>Write tests → implement code → run <code>gradle test</code>.</li>
+<li>Run <code>pre-commit run --all-files</code> and fix issues.</li>
+<li>Open PR with <strong>Conventional Commit</strong> title and the PR template checklist.</li>
+</ol>
+<h3 id="52-contract-change-openapi">5.2 Contract change (OpenAPI)<a class="headerlink" href="#52-contract-change-openapi" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Update controller/DTOs and <strong>synchronize</strong> <code>docs/contracts/openapi/v1/openapi.yaml</code>.</li>
+<li>Append a new entry to <code>docs/contracts/openapi/v1/CHANGELOG.md</code>.</li>
+<li>If change is breaking, create/extend an ADR and justify versioning (<code>/v2</code> when needed).</li>
+<li>PR must include examples and Problem Details per RFC7807.</li>
+</ol>
+<h3 id="53-database-change">5.3 Database change<a class="headerlink" href="#53-database-change" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Add reversible Flyway migration.</li>
+<li>Update ADR for indexes/structure if needed.</li>
+<li>Add/adjust Testcontainers tests to validate forward/backward migration.</li>
+</ol>
+<h3 id="54-observability">5.4 Observability<a class="headerlink" href="#54-observability" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Add metrics/traces/logs for new flows.</li>
+<li>Ensure labels include <code>tenantId</code> (non‑PII) and correlation IDs.</li>
+<li>Update <code>docs/governance/SLOs-SLIs.md</code> if SLI changes or new metric surfaces.</li>
+</ol>
+<h3 id="55-securitysensitive-change">5.5 Security‑sensitive change<a class="headerlink" href="#55-securitysensitive-change" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Validate authn/authz behavior and tenant isolation.</li>
+<li>Update SECURITY notes and add tests covering misuse/abuse paths.</li>
+</ol>
+<hr />
+<h2 id="6-pr-quality-gate-must-pass">6) PR Quality Gate (must pass)<a class="headerlink" href="#6-pr-quality-gate-must-pass" title="Permanent link">&para;</a></h2>
+<ul>
+<li>✅ <strong>Build/tests:</strong> <code>gradle test</code> green.</li>
+<li>✅ <strong>pre-commit:</strong> all hooks pass (YAML/MD, Prettier, Google Java Format, commitlint).</li>
+<li>✅ <strong>Docs/Contracts:</strong> updated when API surface changed.</li>
+<li>✅ <strong>Security:</strong> tenant isolation, headers, idempotency validated.</li>
+<li>✅ <strong>No secrets</strong> in diffs; structured logs only.</li>
+</ul>
+<p><strong>PR Title/Commit message:</strong> Conventional Commits, e.g. <code>feat(account): add bank attribution to transactions</code>.</p>
+<p><strong>PR Description</strong> (agents should include):</p>
+<div class="highlight"><pre><span></span><code><span class="gu">## Summary</span>
+
+What changed and why.
+
+<span class="gu">## Checklist</span>
+
+<span class="k">- [ ]</span> Docs updated (ADRs/Scope/Contracts)
+<span class="k">- [ ]</span> Tests updated (unit/integration/CDC)
+<span class="k">- [ ]</span> Security reviewed (authz, tenant scoping, headers)
+<span class="k">- [ ]</span> Migration safe (Flyway forward/backward tested)
+</code></pre></div>
+<hr />
+<h2 id="7-file-directory-policy">7) File &amp; Directory Policy<a class="headerlink" href="#7-file-directory-policy" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Allowed to edit:</strong> <code>src/**</code>, <code>docs/**</code>, <code>.github/**</code>, <code>.pre-commit-config.yaml</code>, <code>.commitlintrc.cjs</code>, <code>scripts/**</code>, <code>build.gradle[.kts]</code>, <code>settings.gradle[.kts]</code>.</li>
+<li><strong>Do not add:</strong> Gradle wrapper to VCS (CI uses <code>setup-gradle</code>).</li>
+<li><strong>.gitignore:</strong> may include cache dirs (e.g., <code>.git-hooks-cache/</code>).</li>
+<li><strong>MkDocs:</strong> do not remove Mermaid support; <code>mkdocs.yml</code> remains excluded from YAML hook.</li>
+</ul>
+<hr />
+<h2 id="8-conventions">8) Conventions<a class="headerlink" href="#8-conventions" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Branches:</strong> <code>feat/*</code>, <code>fix/*</code>, <code>chore/*</code>, <code>docs/*</code>, <code>refactor/*</code>.</li>
+<li><strong>Commits:</strong> Conventional Commits; subject should avoid UPPERCASE acronyms unless the rule is relaxed.</li>
+<li><strong>Labels:</strong> <code>area/*</code>, <code>module/*</code>, <code>type/*</code>, <code>prio/*</code> when creating issues/PRs.</li>
+</ul>
+<hr />
+<h2 id="9-commands-agents-may-use">9) Commands Agents May Use<a class="headerlink" href="#9-commands-agents-may-use" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># Build &amp; test</span>
+gradle<span class="w"> </span>-q<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># Repo hygiene</span>
+pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+
+<span class="c1"># Formatter cache/script</span>
+chmod<span class="w"> </span>+x<span class="w"> </span>scripts/google-java-format.sh<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+
+<span class="c1"># MkDocs (local via Docker, optional in later iterations)</span>
+docker<span class="w"> </span>compose<span class="w"> </span>up<span class="w"> </span>docs
+</code></pre></div>
+<hr />
+<h2 id="10-safety-compliance">10) Safety &amp; Compliance<a class="headerlink" href="#10-safety-compliance" title="Permanent link">&para;</a></h2>
+<ul>
+<li>No PII or secrets in code, configs, logs, commits, or PRs.</li>
+<li>Redact sensitive fields in logs; use correlation IDs.</li>
+<li>Respect tenant boundaries at all layers; treat cross‑tenant attempts as <strong>security events</strong>.</li>
+</ul>
+<hr />
+<h2 id="11-escalation-humanintheloop">11) Escalation &amp; Human‑in‑the‑loop<a class="headerlink" href="#11-escalation-humanintheloop" title="Permanent link">&para;</a></h2>
+<ul>
+<li>If uncertain about requirements or encountering ambiguity, open a <strong>draft PR</strong> or issue labeled <code>needs/decision</code> and request human review.</li>
+<li>For potential breaking changes, create/update an <strong>ADR</strong> and reference it in the PR.</li>
+</ul>
+<hr />
+<h2 id="12-change-control-for-agentsmd">12) Change Control for AGENTS.md<a class="headerlink" href="#12-change-control-for-agentsmd" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Update this document when roles, guardrails, or workflows change.</li>
+<li>Record rationale in <code>docs/governance/scope-CHANGELOG.md</code> and/or a new ADR.</li>
 </ul>
 
 
