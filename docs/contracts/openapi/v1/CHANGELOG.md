@@ -1,4 +1,5 @@
 # OpenAPI v1 — CHANGELOG
+<!-- File: CHANGELOG.md -->
 
 ## 2025-10-01
 
