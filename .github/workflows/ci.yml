@@ -7,16 +7,40 @@ on:
     branches: [main]
 
 jobs:
-  build-test:
+  discover-projects:
+    name: Discover Gradle projects
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Temurin 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "21"
+      - name: Determine modules
+        id: set-matrix
+        run: |
+          projects=$(python - <<'PY'
+import json
+import pathlib
+
+projects = ["root"]
+modules_dir = pathlib.Path("modules")
+if modules_dir.exists():
+    projects.extend(
+        sorted(
+            module.name
+            for module in modules_dir.iterdir()
+            if module.is_dir() and not module.name.startswith(".")
+        )
+    )
+print(json.dumps(projects))
+PY
+          )
+          echo "matrix=$projects" >> "$GITHUB_OUTPUT"
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -40,11 +64,31 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Gradle build
-        run: ./gradlew build
-
-      - name: Gradle test
-        run: ./gradlew test
-
       - name: Run pre-commit on all files
         run: pre-commit run --all-files
+
+  build-test:
+    name: Build and test ${{ matrix.project }}
+    needs: discover-projects
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJson(needs.discover-projects.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Temurin 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Build and test project
+        run: |
+          if [ "${{ matrix.project }}" = "root" ]; then
+            ./gradlew build
+          else
+            ./gradlew :modules:${{ matrix.project }}:build
+          fi
