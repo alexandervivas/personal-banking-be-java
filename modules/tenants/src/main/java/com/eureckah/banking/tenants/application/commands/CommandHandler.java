@@ -1,5 +1,7 @@
 package com.eureckah.banking.tenants.application.commands;
 
-public interface CommandHandler<Command> {
-    void handle(Command command);
+import java.util.Optional;
+
+public interface CommandHandler<Command, Effect> {
+    Effect handle(Command command);
 }
