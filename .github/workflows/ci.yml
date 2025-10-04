@@ -21,7 +21,7 @@ jobs:
           projects=$(python - <<'PY'
           import json
           import pathlib
-          
+
           projects = ["root"]
           modules_dir = pathlib.Path("modules")
           if modules_dir.exists():
