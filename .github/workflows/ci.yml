@@ -19,22 +19,23 @@ jobs:
         id: set-matrix
         run: |
           projects=$(python - <<'PY'
-            import json
-            import pathlib
+          import json
+          import pathlib
 
-            projects = []
-            modules_dir = pathlib.Path("modules")
-            if modules_dir.exists():
-                projects.extend(
-                    sorted(
-                        module.name
-                        for module in modules_dir.iterdir()
-                        if module.is_dir() and not module.name.startswith(".")
+          projects = []
+          modules_dir = pathlib.Path("modules")
+          if modules_dir.exists():
+              projects.extend(
+                  sorted(
+                      module.name
+                      for module in modules_dir.iterdir()
+                      if module.is_dir() and not module.name.startswith(".")
+                  )
+              )
+          print(json.dumps(projects))
+          PY
                     )
-                )
-            print(json.dumps(projects))
-          PY)
-          echo "matrix=$projects" >> "$GITHUB_OUTPUT"
+                    echo "matrix=$projects" >> "$GITHUB_OUTPUT"
 
   lint:
     runs-on: ubuntu-latest
