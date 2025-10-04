@@ -19,5 +19,4 @@ public class Profile {
         this.user = user;
         this.role = role;
     }
-
 }

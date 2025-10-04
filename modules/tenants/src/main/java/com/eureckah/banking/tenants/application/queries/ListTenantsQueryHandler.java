@@ -4,7 +4,7 @@ import com.eureckah.banking.tenants.application.views.TenantView;
 
 import java.util.List;
 
-public class ListTenantsQueryHandler implements QueryHandler<ListTenantsQuery, List<TenantView>>{
+public class ListTenantsQueryHandler implements QueryHandler<ListTenantsQuery, List<TenantView>> {
     @Override
     public List<TenantView> handle(ListTenantsQuery listTenantsQuery) {
         return List.of();
