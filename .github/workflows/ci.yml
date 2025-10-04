@@ -86,9 +86,4 @@ jobs:
           cache: gradle
 
       - name: Build and test project
-        run: |
-          if [ "${{ matrix.project }}" = "root" ]; then
-            ./gradlew build
-          else
-            ./gradlew :modules:${{ matrix.project }}:build
-          fi
+        run: ./gradlew :modules:${{ matrix.project }}:build
