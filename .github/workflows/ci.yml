@@ -40,11 +40,11 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Gradle build
-        run: ./gradlew build
+      - name: Build
+        run: make build modules=tenants
 
-      - name: Gradle test
-        run: ./gradlew test
+      - name: Test
+        run: make test test
 
       - name: Run pre-commit on all files
         run: pre-commit run --all-files
