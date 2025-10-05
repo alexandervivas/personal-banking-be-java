@@ -3,6 +3,8 @@ package com.eureckah.banking.tenants.api;
 import com.eureckah.banking.tenants.api.requests.CreateTenantRequest;
 import com.eureckah.banking.tenants.application.commands.CreateTenantCommand;
 import com.eureckah.banking.tenants.application.commands.CreateTenantCommandHandler;
+import com.eureckah.banking.tenants.application.exceptions.FailedCommandException;
+import com.eureckah.banking.tenants.application.exceptions.InvalidCommandException;
 import com.eureckah.banking.tenants.domain.model.TenantId;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +24,11 @@ import java.net.URISyntaxException;
 @RequestMapping("api/v1/tenants")
 public final class TenantController {
 
-    private final CreateTenantCommandHandler createTenantCommandHandler;
-
     @Value("${hostname}")
     private static String hostname;
 
     private static final String BASE_PATH = hostname + "/api/v1/tenants/";
+    private final CreateTenantCommandHandler createTenantCommandHandler;
 
     public TenantController(CreateTenantCommandHandler createTenantCommandHandler) {
         this.createTenantCommandHandler = createTenantCommandHandler;
@@ -36,12 +37,28 @@ public final class TenantController {
     @PostMapping
     public ResponseEntity<URI> createTenant(@RequestBody CreateTenantRequest request) {
         CreateTenantCommand command = new CreateTenantCommand(request.name());
-        TenantId tenantId = createTenantCommandHandler.handle(command);
 
         try {
-            return ResponseEntity.created(new URI(BASE_PATH + tenantId.id())).build();
+
+            TenantId tenantId = createTenantCommandHandler.handle(command);
+            String resourceCreated = BASE_PATH + tenantId.id().toString();
+
+            return ResponseEntity.created(new URI(resourceCreated)).build();
+
+        } catch (InvalidCommandException exception) {
+            log.error(
+                    "Error creating the tenant {} because of {}",
+                    request.name(),
+                    exception.getReason(),
+                    exception);
+            return ResponseEntity.badRequest().build();
+
+        } catch (FailedCommandException exception) {
+            log.error("Error creating the tenant {}", request.name(), exception);
+            return ResponseEntity.internalServerError().build();
+
         } catch (URISyntaxException exception) {
-            log.error("Error creating URI for tenant", exception);
+            log.error("Error creating URI for tenant {}", request.name(), exception);
             return ResponseEntity.internalServerError().build();
         }
     }
