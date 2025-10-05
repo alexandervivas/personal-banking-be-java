@@ -8,15 +8,14 @@ import com.eureckah.banking.tenants.application.exceptions.InvalidCommandExcepti
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.UUID;
 
 @Slf4j
@@ -24,10 +23,6 @@ import java.util.UUID;
 @RequestMapping("api/v1/tenants")
 public final class TenantController {
 
-    @Value("${hostname}")
-    private static String hostname;
-
-    private static final String BASE_PATH = hostname + "/api/v1/tenants/";
     private final CreateTenantCommandHandler createTenantCommandHandler;
 
     public TenantController(CreateTenantCommandHandler createTenantCommandHandler) {
@@ -35,15 +30,15 @@ public final class TenantController {
     }
 
     @PostMapping
-    public ResponseEntity<URI> createTenant(@RequestBody CreateTenantRequest request) {
+    public ResponseEntity<Void> createTenant(@RequestBody CreateTenantRequest request) {
         CreateTenantCommand command = new CreateTenantCommand(request.name());
 
         try {
-
             UUID tenantId = createTenantCommandHandler.handle(command);
-            String resourceCreated = BASE_PATH + tenantId.toString();
 
-            return ResponseEntity.created(new URI(resourceCreated)).build();
+            URI newResourceLocation = getResourceUri(tenantId);
+
+            return ResponseEntity.created(newResourceLocation).build();
 
         } catch (InvalidCommandException exception) {
             log.error(
@@ -56,10 +51,13 @@ public final class TenantController {
         } catch (FailedCommandException exception) {
             log.error("Error creating the tenant {}", request.name(), exception);
             return ResponseEntity.internalServerError().build();
-
-        } catch (URISyntaxException exception) {
-            log.error("Error creating URI for tenant {}", request.name(), exception);
-            return ResponseEntity.internalServerError().build();
         }
+    }
+
+    private static URI getResourceUri(UUID tenantId) {
+        return ServletUriComponentsBuilder.fromCurrentRequestUri()
+                .path("/{id}")
+                .buildAndExpand(tenantId)
+                .toUri();
     }
 }

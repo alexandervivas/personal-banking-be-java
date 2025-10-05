@@ -8,6 +8,6 @@ public final class TenantMapper {
     private TenantMapper() {}
 
     public TenantView toView(Tenant tenant) {
-        return new TenantView(tenant.getId().id(), tenant.getName());
+        return new TenantView(tenant.getId(), tenant.getName());
     }
 }

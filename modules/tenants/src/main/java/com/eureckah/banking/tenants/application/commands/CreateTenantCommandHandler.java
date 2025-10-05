@@ -5,11 +5,11 @@ import com.eureckah.banking.tenants.application.exceptions.InvalidCommandExcepti
 import com.eureckah.banking.tenants.domain.model.Tenant;
 import com.eureckah.banking.tenants.domain.repository.TenantRepository;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-@Component
+@Service
 public class CreateTenantCommandHandler implements CommandHandler<CreateTenantCommand, UUID> {
     private final TenantRepository tenantRepository;
 
