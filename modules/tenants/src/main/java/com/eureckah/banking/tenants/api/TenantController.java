@@ -5,7 +5,6 @@ import com.eureckah.banking.tenants.application.commands.CreateTenantCommand;
 import com.eureckah.banking.tenants.application.commands.CreateTenantCommandHandler;
 import com.eureckah.banking.tenants.application.exceptions.FailedCommandException;
 import com.eureckah.banking.tenants.application.exceptions.InvalidCommandException;
-import com.eureckah.banking.tenants.domain.model.TenantId;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -40,8 +40,8 @@ public final class TenantController {
 
         try {
 
-            TenantId tenantId = createTenantCommandHandler.handle(command);
-            String resourceCreated = BASE_PATH + tenantId.id().toString();
+            UUID tenantId = createTenantCommandHandler.handle(command);
+            String resourceCreated = BASE_PATH + tenantId.toString();
 
             return ResponseEntity.created(new URI(resourceCreated)).build();
 

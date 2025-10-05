@@ -2,15 +2,39 @@ package com.eureckah.banking.tenants.application.commands;
 
 import com.eureckah.banking.tenants.application.exceptions.FailedCommandException;
 import com.eureckah.banking.tenants.application.exceptions.InvalidCommandException;
-import com.eureckah.banking.tenants.domain.model.TenantId;
+import com.eureckah.banking.tenants.domain.model.Tenant;
+import com.eureckah.banking.tenants.domain.repository.TenantRepository;
 
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
-public class CreateTenantCommandHandler implements CommandHandler<CreateTenantCommand, TenantId> {
+public class CreateTenantCommandHandler implements CommandHandler<CreateTenantCommand, UUID> {
+    private final TenantRepository tenantRepository;
+
+    public CreateTenantCommandHandler(TenantRepository tenantRepository) {
+        this.tenantRepository = tenantRepository;
+    }
+
     @Override
-    public TenantId handle(CreateTenantCommand createTenantCommand)
+    public UUID handle(CreateTenantCommand createTenantCommand)
             throws InvalidCommandException, FailedCommandException {
-        return null;
+        if (createTenantCommand == null
+                || createTenantCommand.name() == null
+                || createTenantCommand.name().isBlank()) {
+            throw new InvalidCommandException(
+                    CreateTenantCommand.class, "Tenant name must be provided");
+        }
+        try {
+            Tenant tenant = Tenant.builder().name(createTenantCommand.name()).build();
+            Tenant saved = tenantRepository.save(tenant);
+            if (saved.getId() == null) {
+                throw new IllegalStateException("Saved tenant returned without id");
+            }
+            return saved.getId();
+        } catch (Exception exception) {
+            throw new FailedCommandException(CreateTenantCommand.class, exception);
+        }
     }
 }
