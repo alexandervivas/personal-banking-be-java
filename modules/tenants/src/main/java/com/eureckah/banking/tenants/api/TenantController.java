@@ -1,8 +1,9 @@
 package com.eureckah.banking.tenants.api;
 
+import com.eureckah.banking.tenants.api.requests.CreateTenantRequest;
 import com.eureckah.banking.tenants.application.commands.CreateTenantCommand;
 import com.eureckah.banking.tenants.application.commands.CreateTenantCommandHandler;
-import com.eureckah.banking.tenants.domain.TenantId;
+import com.eureckah.banking.tenants.domain.model.TenantId;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,9 +20,9 @@ import java.net.URISyntaxException;
 @Slf4j
 @RestController
 @RequestMapping("api/v1/tenants")
-public class TenantController {
+public final class TenantController {
 
-    private CreateTenantCommandHandler createTenantCommandHandler;
+    private final CreateTenantCommandHandler createTenantCommandHandler;
 
     @Value("${hostname}")
     private static String hostname;
