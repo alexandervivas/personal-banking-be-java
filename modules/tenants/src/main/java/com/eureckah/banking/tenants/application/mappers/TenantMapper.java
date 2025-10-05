@@ -1,7 +1,7 @@
 package com.eureckah.banking.tenants.application.mappers;
 
 import com.eureckah.banking.tenants.application.views.TenantView;
-import com.eureckah.banking.tenants.domain.model.Tenant;
+import com.eureckah.banking.tenants.domain.Tenant;
 
 public final class TenantMapper {
 

@@ -1,8 +1,8 @@
-package com.eureckah.banking.tenants.infrastructure.persistence.repository;
+package com.eureckah.banking.tenants.infrastructure.persistence;
 
-import com.eureckah.banking.tenants.domain.model.Tenant;
-import com.eureckah.banking.tenants.domain.model.TenantId;
-import com.eureckah.banking.tenants.domain.repository.TenantRepository;
+import com.eureckah.banking.tenants.application.ports.repository.TenantRepository;
+import com.eureckah.banking.tenants.domain.Tenant;
+import com.eureckah.banking.tenants.domain.TenantId;
 import com.eureckah.banking.tenants.infrastructure.persistence.jpa.TenantJpaRepository;
 
 import org.springframework.context.annotation.Primary;

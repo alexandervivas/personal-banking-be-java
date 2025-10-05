@@ -1,7 +1,7 @@
-package com.eureckah.banking.tenants.domain.repository;
+package com.eureckah.banking.tenants.application.ports.repository;
 
-import com.eureckah.banking.tenants.domain.model.Tenant;
-import com.eureckah.banking.tenants.domain.model.TenantId;
+import com.eureckah.banking.tenants.domain.Tenant;
+import com.eureckah.banking.tenants.domain.TenantId;
 
 import java.util.List;
 import java.util.Optional;

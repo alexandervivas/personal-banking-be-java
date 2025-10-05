@@ -2,8 +2,8 @@ package com.eureckah.banking.tenants.application.commands;
 
 import com.eureckah.banking.tenants.application.exceptions.FailedCommandException;
 import com.eureckah.banking.tenants.application.exceptions.InvalidCommandException;
-import com.eureckah.banking.tenants.domain.model.Tenant;
-import com.eureckah.banking.tenants.domain.repository.TenantRepository;
+import com.eureckah.banking.tenants.application.ports.repository.TenantRepository;
+import com.eureckah.banking.tenants.domain.Tenant;
 
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.eureckah.banking.tenants.domain.model;
+package com.eureckah.banking.tenants.domain;
 
 public enum Role {
     OWNER,
