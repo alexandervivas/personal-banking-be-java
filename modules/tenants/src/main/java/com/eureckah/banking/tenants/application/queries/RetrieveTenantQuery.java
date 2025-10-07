@@ -1,5 +1,5 @@
 package com.eureckah.banking.tenants.application.queries;
 
-import com.eureckah.banking.tenants.domain.TenantId;
+import java.util.UUID;
 
-public record RetrieveTenantQuery(TenantId id) {}
+public record RetrieveTenantQuery(UUID id) {}
