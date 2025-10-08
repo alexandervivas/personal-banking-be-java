@@ -9,3 +9,4 @@ This index lists all decisions. New ADRs append at the end. Superseded ADRs keep
 - ADR-004 — Idempotency Strategy (Accepted)
 - ADR-005 — Bank Attribution & Multi-currency Balances (Accepted)
 - ADR-007 — Hosting on Render Free Tier (Accepted)
+- ADR-006 — API Proxy and gRPC Module Communication (Accepted)
