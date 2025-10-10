@@ -1,4 +1,4 @@
-package com.eureckah.banking.tenants.application.views;
+package com.eureckah.banking.tenants.application.dto;
 
 import java.util.UUID;
 

@@ -1,6 +1,6 @@
-package com.eureckah.banking.tenants.infrastructure.persistence.jpa;
+package com.eureckah.banking.tenants.infrastructure.adapter.out.jpa;
 
-import com.eureckah.banking.tenants.domain.Tenant;
+import com.eureckah.banking.tenants.domain.model.Tenant;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

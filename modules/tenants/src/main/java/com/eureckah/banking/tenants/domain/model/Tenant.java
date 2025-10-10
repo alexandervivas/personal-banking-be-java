@@ -1,4 +1,4 @@
-package com.eureckah.banking.tenants.domain;
+package com.eureckah.banking.tenants.domain.model;
 
 import jakarta.persistence.*;
 

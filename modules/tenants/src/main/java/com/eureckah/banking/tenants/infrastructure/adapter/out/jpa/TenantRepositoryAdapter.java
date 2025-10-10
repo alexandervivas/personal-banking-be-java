@@ -1,8 +1,7 @@
-package com.eureckah.banking.tenants.infrastructure.persistence;
+package com.eureckah.banking.tenants.infrastructure.adapter.out.jpa;
 
-import com.eureckah.banking.tenants.application.ports.repository.TenantRepository;
-import com.eureckah.banking.tenants.domain.Tenant;
-import com.eureckah.banking.tenants.infrastructure.persistence.jpa.TenantJpaRepository;
+import com.eureckah.banking.tenants.application.port.out.TenantRepository;
+import com.eureckah.banking.tenants.domain.model.Tenant;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -13,11 +12,11 @@ import java.util.UUID;
 
 @Primary
 @Repository
-public class DelegatingTenantRepository implements TenantRepository {
+public class TenantRepositoryAdapter implements TenantRepository {
 
     private final TenantJpaRepository delegate;
 
-    public DelegatingTenantRepository(TenantJpaRepository delegate) {
+    public TenantRepositoryAdapter(TenantJpaRepository delegate) {
         this.delegate = delegate;
     }
 

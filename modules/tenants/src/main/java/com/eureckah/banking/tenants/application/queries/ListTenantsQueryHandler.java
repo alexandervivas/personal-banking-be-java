@@ -1,6 +1,6 @@
 package com.eureckah.banking.tenants.application.queries;
 
-import com.eureckah.banking.tenants.application.views.TenantView;
+import com.eureckah.banking.tenants.application.dto.TenantView;
 
 import java.util.List;
 
