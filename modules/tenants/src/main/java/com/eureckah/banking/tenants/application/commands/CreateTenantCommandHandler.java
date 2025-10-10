@@ -1,49 +1,35 @@
 package com.eureckah.banking.tenants.application.commands;
 
-import com.eureckah.banking.tenants.application.exceptions.FailedCommandException;
-import com.eureckah.banking.tenants.application.exceptions.InvalidCommandException;
+import com.eureckah.banking.tenants.application.dto.TenantView;
+import com.eureckah.banking.tenants.application.port.in.CreateTenantUseCase;
+import com.eureckah.banking.tenants.application.port.out.TenantEventsPublisher;
 import com.eureckah.banking.tenants.application.port.out.TenantRepository;
 import com.eureckah.banking.tenants.domain.model.Tenant;
+
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
-public class CreateTenantCommandHandler implements CommandHandler<CreateTenantCommand, UUID> {
-    private final TenantRepository tenantRepository;
+public class CreateTenantCommandHandler implements CreateTenantUseCase {
+    private final TenantRepository repository;
+    private final TenantEventsPublisher eventsPublisher;
 
-    public CreateTenantCommandHandler(TenantRepository tenantRepository) {
-        this.tenantRepository = tenantRepository;
+    public CreateTenantCommandHandler(
+            TenantRepository repository, TenantEventsPublisher eventsPublisher) {
+        this.repository = repository;
+        this.eventsPublisher = eventsPublisher;
     }
 
     @Override
-    public UUID handle(CreateTenantCommand createTenantCommand)
-            throws InvalidCommandException, FailedCommandException {
-        tenantNameMustExist(createTenantCommand);
-        try {
-            Tenant saved =
-                    tenantRepository.save(
-                            Tenant.builder().name(createTenantCommand.name()).build());
-            tenantIdMustNotBeNull(saved);
-            return saved.getId();
-        } catch (Exception exception) {
-            throw new FailedCommandException(CreateTenantCommand.class, exception);
-        }
-    }
-
-    private static void tenantNameMustExist(CreateTenantCommand createTenantCommand) {
-        if (createTenantCommand == null
-                || createTenantCommand.name() == null
-                || createTenantCommand.name().isBlank()) {
-            throw new InvalidCommandException(
-                    CreateTenantCommand.class, "Tenant name must be provided");
-        }
-    }
-
-    private static void tenantIdMustNotBeNull(Tenant saved) {
-        if (saved.getId() == null) {
-            throw new IllegalStateException("Saved tenant returned without id");
-        }
+    @Transactional
+    public TenantView handle(CreateTenantCommand command) {
+        Tenant tenant = Tenant.create(command.name());
+        UUID id = repository.save(tenant);
+        TenantView tenantView = new TenantView(id, tenant.getName());
+        eventsPublisher.publishTenantCreated(tenantView);
+        return tenantView;
     }
 }

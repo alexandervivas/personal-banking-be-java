@@ -1,12 +1,12 @@
 package com.eureckah.banking.tenants.infrastructure.adapter.in.grpc;
 
 import com.eureckah.banking.tenants.application.commands.CreateTenantCommand;
-import com.eureckah.banking.tenants.application.commands.CreateTenantCommandHandler;
 import com.eureckah.banking.tenants.application.exceptions.FailedCommandException;
 import com.eureckah.banking.tenants.application.exceptions.InvalidCommandException;
-import com.eureckah.banking.tenants.proto.CreateTenantRequest;
-import com.eureckah.banking.tenants.proto.CreateTenantResponse;
-import com.eureckah.banking.tenants.proto.TenantsServiceGrpc;
+import com.eureckah.banking.tenants.application.port.in.CreateTenantUseCase;
+import com.eureckah.banking.tenants.proto.v1.CreateTenantRequest;
+import com.eureckah.banking.tenants.proto.v1.CreateTenantResponse;
+import com.eureckah.banking.tenants.proto.v1.TenantsServiceGrpc;
 
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
@@ -15,27 +15,23 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.grpc.server.service.GrpcService;
 
-import java.util.UUID;
-
 @GrpcService
 @Slf4j
 public class TenantsGrpcService extends TenantsServiceGrpc.TenantsServiceImplBase {
 
-    private final CreateTenantCommandHandler createTenantCommandHandler;
+    private final CreateTenantUseCase createTenantUseCase;
 
-    public TenantsGrpcService(CreateTenantCommandHandler createTenantCommandHandler) {
-        this.createTenantCommandHandler = createTenantCommandHandler;
+    public TenantsGrpcService(CreateTenantUseCase createTenantUseCase) {
+        this.createTenantUseCase = createTenantUseCase;
     }
 
     @Override
     public void createTenant(
             CreateTenantRequest request, StreamObserver<CreateTenantResponse> responseObserver) {
-        var command = new CreateTenantCommand(request.getName());
         try {
-            UUID tenantId = createTenantCommandHandler.handle(command);
-
-            CreateTenantResponse response =
-                    CreateTenantResponse.newBuilder().setTenantId(tenantId.toString()).build();
+            var command = new CreateTenantCommand(request.getName());
+            var result = createTenantUseCase.handle(command);
+            var response = TenantGrpcMapper.toResponse(result.id());
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();

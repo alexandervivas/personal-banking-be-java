@@ -14,34 +14,32 @@ import java.util.UUID;
 @Repository
 public class TenantRepositoryAdapter implements TenantRepository {
 
-    private final TenantJpaRepository delegate;
+    private final TenantJpaRepository jpa;
 
-    public TenantRepositoryAdapter(TenantJpaRepository delegate) {
-        this.delegate = delegate;
+    public TenantRepositoryAdapter(TenantJpaRepository jpa) {
+        this.jpa = jpa;
     }
 
     @Override
     public Optional<Tenant> findById(UUID id) {
         if (id == null) return Optional.empty();
-        return delegate.findById(id);
+        return jpa.findById(id).map(TenantJpaMapper::toDomain);
     }
 
     @Override
-    public Tenant save(Tenant tenant) {
-        if (tenant == null) {
-            throw new IllegalArgumentException("Tenant must not be null");
-        }
-        return delegate.save(tenant);
+    public UUID save(Tenant tenant) {
+        var entity = TenantJpaMapper.toEntity(tenant);
+        return jpa.save(entity).getId();
     }
 
     @Override
     public void delete(UUID id) {
         if (id == null) return;
-        delegate.deleteById(id);
+        jpa.deleteById(id);
     }
 
     @Override
     public List<Tenant> findAll() {
-        return delegate.findAll().stream().toList();
+        return jpa.findAll().stream().map(TenantJpaMapper::toDomain).toList();
     }
 }

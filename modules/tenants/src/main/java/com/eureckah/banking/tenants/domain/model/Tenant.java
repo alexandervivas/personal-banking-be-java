@@ -1,28 +1,19 @@
 package com.eureckah.banking.tenants.domain.model;
 
-import jakarta.persistence.*;
-
 import lombok.*;
-
-import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-@Entity
-@Table(name = "tenants")
 public class Tenant {
 
-    @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    @NonNull
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
+    @NonNull private String name;
+
+    public static Tenant create(String name) {
+        return builder().name(name).build();
+    }
 }

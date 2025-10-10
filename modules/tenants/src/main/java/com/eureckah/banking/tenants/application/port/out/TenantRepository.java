@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface TenantRepository {
     Optional<Tenant> findById(UUID id);
 
-    Tenant save(Tenant tenant);
+    UUID save(Tenant tenant);
 
     void delete(UUID id);
 
