@@ -26,10 +26,18 @@ public class CreateTenantCommandHandler implements CreateTenantUseCase {
     @Override
     @Transactional
     public TenantView handle(CreateTenantCommand command) {
+        TenantView tenantView = createTenant(command);
+        notifyTenantCreation(tenantView);
+        return tenantView;
+    }
+
+    private void notifyTenantCreation(TenantView tenantView) {
+        eventsPublisher.publishTenantCreated(tenantView);
+    }
+
+    private TenantView createTenant(CreateTenantCommand command) {
         Tenant tenant = Tenant.create(command.name());
         UUID id = repository.save(tenant);
-        TenantView tenantView = new TenantView(id, tenant.getName());
-        eventsPublisher.publishTenantCreated(tenantView);
-        return tenantView;
+        return new TenantView(id, tenant.getName());
     }
 }
