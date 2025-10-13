@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.grpc.server.service.GrpcService;
 
+import java.util.UUID;
+
 @GrpcService
 @Slf4j
 public class TenantsGrpcService extends TenantsServiceGrpc.TenantsServiceImplBase {
@@ -29,7 +31,10 @@ public class TenantsGrpcService extends TenantsServiceGrpc.TenantsServiceImplBas
     public void createTenant(
             CreateTenantRequest request, StreamObserver<CreateTenantResponse> responseObserver) {
         try {
-            var command = new CreateTenantCommand(request.getName());
+            UUID userId = getUserId(request, responseObserver);
+            if (userId == null) return;
+
+            var command = new CreateTenantCommand(request.getName(), userId);
             var result = createTenantUseCase.handle(command);
             var response = TenantGrpcMapper.toResponse(result.id());
 
@@ -56,5 +61,20 @@ public class TenantsGrpcService extends TenantsServiceGrpc.TenantsServiceImplBas
             responseObserver.onError(
                     Status.UNKNOWN.withDescription("Unexpected error").asRuntimeException());
         }
+    }
+
+    private UUID getUserId(
+            CreateTenantRequest request, StreamObserver<CreateTenantResponse> responseObserver) {
+        UUID ownerId;
+        try {
+            ownerId = UUID.fromString(request.getUserId());
+        } catch (Exception e) {
+            responseObserver.onError(
+                    Status.INVALID_ARGUMENT
+                            .withDescription("actor_user_id must be a valid UUID")
+                            .asRuntimeException());
+            return null;
+        }
+        return ownerId;
     }
 }

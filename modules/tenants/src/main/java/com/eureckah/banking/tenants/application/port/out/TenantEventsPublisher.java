@@ -1,8 +1,8 @@
 package com.eureckah.banking.tenants.application.port.out;
 
-import com.eureckah.banking.tenants.application.dto.TenantView;
+import com.eureckah.banking.tenants.domain.events.TenantEvent;
 
 public interface TenantEventsPublisher {
 
-    void publishTenantCreated(TenantView tenant);
+    void publishTenantEvent(TenantEvent event);
 }

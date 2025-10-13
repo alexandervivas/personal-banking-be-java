@@ -4,6 +4,7 @@ import com.eureckah.banking.tenants.application.dto.TenantView;
 import com.eureckah.banking.tenants.application.port.in.CreateTenantUseCase;
 import com.eureckah.banking.tenants.application.port.out.TenantEventsPublisher;
 import com.eureckah.banking.tenants.application.port.out.TenantRepository;
+import com.eureckah.banking.tenants.domain.events.TenantCreated;
 import com.eureckah.banking.tenants.domain.model.Tenant;
 
 import jakarta.transaction.Transactional;
@@ -32,7 +33,7 @@ public class CreateTenantCommandHandler implements CreateTenantUseCase {
     }
 
     private void notifyTenantCreation(TenantView tenantView) {
-        eventsPublisher.publishTenantCreated(tenantView);
+        eventsPublisher.publishTenantEvent(new TenantCreated(tenantView));
     }
 
     private TenantView createTenant(CreateTenantCommand command) {
