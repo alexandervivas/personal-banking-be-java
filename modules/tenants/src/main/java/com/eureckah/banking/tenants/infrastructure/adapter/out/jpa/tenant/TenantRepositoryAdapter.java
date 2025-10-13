@@ -1,4 +1,4 @@
-package com.eureckah.banking.tenants.infrastructure.adapter.out.jpa;
+package com.eureckah.banking.tenants.infrastructure.adapter.out.jpa.tenant;
 
 import com.eureckah.banking.tenants.application.port.out.TenantRepository;
 import com.eureckah.banking.tenants.domain.model.Tenant;

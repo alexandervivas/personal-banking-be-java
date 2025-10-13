@@ -1,4 +1,4 @@
-package com.eureckah.banking.tenants.infrastructure.adapter.out.jpa;
+package com.eureckah.banking.tenants.infrastructure.adapter.out.jpa.tenant;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
