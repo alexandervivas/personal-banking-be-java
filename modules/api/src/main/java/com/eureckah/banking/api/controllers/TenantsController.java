@@ -1,5 +1,7 @@
 package com.eureckah.banking.api.controllers;
 
+import com.eureckah.banking.api.requests.CreateTenantHttpRequest;
+import com.eureckah.banking.api.responses.CreateTenantHttpResponse;
 import com.eureckah.banking.tenants.proto.v1.CreateTenantRequest;
 import com.eureckah.banking.tenants.proto.v1.CreateTenantResponse;
 import com.eureckah.banking.tenants.proto.v1.TenantsServiceGrpc;
@@ -11,10 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/v1/tenants")
 public class TenantsController {
-
-    public record CreateTenantHttpRequest(String name) {}
-
-    public record CreateTenantHttpResponse(String tenantId) {}
 
     private final TenantsServiceGrpc.TenantsServiceBlockingStub tenantsStub;
 
