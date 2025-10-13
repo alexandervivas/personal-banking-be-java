@@ -6,7 +6,6 @@ plugins {
     java
     id("org.springframework.boot")
     id("io.spring.dependency-management")
-    id("com.google.protobuf")
 }
 
 group = "com.eureckah.banking"
@@ -22,6 +21,7 @@ dependencies {
     // gRPC server
     implementation("io.grpc:grpc-services")
     implementation("org.springframework.grpc:spring-grpc-spring-boot-starter")
+    implementation(project(":modules:shared"))
     compileOnly("javax.annotation:javax.annotation-api:1.3.2")
 
     // database
@@ -44,34 +44,5 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.grpc:spring-grpc-dependencies:${property("springGrpcVersion")}")
-    }
-}
-
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc"
-    }
-    plugins {
-        id("grpc") {
-            artifact = "io.grpc:protoc-gen-grpc-java"
-        }
-    }
-    generateProtoTasks {
-        all().forEach {
-            it.plugins {
-                id("grpc") {
-                    option("@generated=omit")
-                }
-            }
-        }
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir("build/generated/source/proto/main/grpc")
-            srcDir("build/generated/source/proto/main/java")
-        }
     }
 }

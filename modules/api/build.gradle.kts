@@ -20,7 +20,7 @@ dependencies {
 
     // gRPC client
     implementation("org.springframework.grpc:spring-grpc-spring-boot-starter")
-    implementation(project(":modules:tenants"))
+    implementation(project(":modules:shared"))
 
     // BDD / Cucumber
     testImplementation("io.cucumber:cucumber-java:7.18.1")
