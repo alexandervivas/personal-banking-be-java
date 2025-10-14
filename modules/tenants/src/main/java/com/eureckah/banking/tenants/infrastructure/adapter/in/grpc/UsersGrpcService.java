@@ -32,7 +32,16 @@ public class UsersGrpcService extends UsersServiceGrpc.UsersServiceImplBase {
 
             var command = new CreateUserCommand(request.getName(), request.getEmail());
             var result = createUserUseCase.handle(command);
-            var response = GrpcResponseConverter.toCreateUserResponse(result.id());
+
+            if (result.isEmpty()) {
+                responseObserver.onError(
+                        Status.FAILED_PRECONDITION
+                                .withDescription("Failed to create user")
+                                .asRuntimeException());
+                return;
+            }
+
+            var response = GrpcResponseConverter.toCreateUserResponse(result.get());
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();

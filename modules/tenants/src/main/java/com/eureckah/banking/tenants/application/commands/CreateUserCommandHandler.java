@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -27,11 +28,11 @@ public class CreateUserCommandHandler implements CreateUserUseCase {
 
     @Override
     @Transactional
-    public UserView handle(CreateUserCommand command) {
+    public Optional<UUID> handle(CreateUserCommand command) {
         User user = createUser(command);
         UserView userView = UserMapper.toView(user);
         notifyUserCreation(userView);
-        return userView;
+        return Optional.of(user.getId());
     }
 
     private void notifyUserCreation(UserView userView) {

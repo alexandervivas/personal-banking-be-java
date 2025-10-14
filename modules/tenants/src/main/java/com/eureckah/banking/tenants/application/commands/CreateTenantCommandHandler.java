@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -34,12 +35,12 @@ public class CreateTenantCommandHandler implements CreateTenantUseCase {
 
     @Override
     @Transactional
-    public TenantView handle(CreateTenantCommand command) {
+    public Optional<UUID> handle(CreateTenantCommand command) {
         Tenant tenant = createTenant(command);
         UUID ownerId = assignTenantOwner(command, tenant);
         TenantView tenantView = TenantMapper.toView(tenant, ownerId);
         notifyTenantCreation(tenantView);
-        return tenantView;
+        return Optional.of(tenant.getId());
     }
 
     private void notifyTenantCreation(TenantView tenantView) {

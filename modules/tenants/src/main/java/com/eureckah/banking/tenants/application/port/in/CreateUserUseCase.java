@@ -1,9 +1,11 @@
 package com.eureckah.banking.tenants.application.port.in;
 
 import com.eureckah.banking.tenants.application.commands.CreateUserCommand;
-import com.eureckah.banking.tenants.application.dto.UserView;
 
-public interface CreateUserUseCase extends CommandUseCase<CreateUserCommand, UserView> {
+import java.util.Optional;
+import java.util.UUID;
 
-    UserView handle(CreateUserCommand command);
+public interface CreateUserUseCase extends CommandUseCase<CreateUserCommand> {
+
+    Optional<UUID> handle(CreateUserCommand command);
 }

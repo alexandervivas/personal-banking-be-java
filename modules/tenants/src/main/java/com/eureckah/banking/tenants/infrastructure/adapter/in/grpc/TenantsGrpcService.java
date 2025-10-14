@@ -35,8 +35,17 @@ public class TenantsGrpcService extends TenantsServiceGrpc.TenantsServiceImplBas
             if (userId == null) return;
 
             var command = new CreateTenantCommand(request.getName(), null);
-            var result = createTenantUseCase.handle(command);
-            var response = GrpcResponseConverter.toCreateTenantResponse(result.id());
+            var optionalUUID = createTenantUseCase.handle(command);
+
+            if (optionalUUID.isEmpty()) {
+                responseObserver.onError(
+                        Status.FAILED_PRECONDITION
+                                .withDescription("Failed to create tenant")
+                                .asRuntimeException());
+                return;
+            }
+
+            var response = GrpcResponseConverter.toCreateTenantResponse(optionalUUID.get());
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
