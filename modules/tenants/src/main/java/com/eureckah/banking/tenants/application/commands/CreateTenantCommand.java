@@ -2,7 +2,7 @@ package com.eureckah.banking.tenants.application.commands;
 
 import com.eureckah.banking.tenants.domain.model.User;
 
-public record CreateTenantCommand(String name, User user) {
+public record CreateTenantCommand(String name, User user) implements Command {
     public CreateTenantCommand {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("name must not be blank");
