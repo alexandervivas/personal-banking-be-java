@@ -16,4 +16,8 @@ public class Profile {
     @NonNull private User user;
 
     @NonNull private Role role;
+
+    public static Profile create(Tenant tenant, User user, Role role) {
+        return builder().tenant(tenant).user(user).role(role).build();
+    }
 }

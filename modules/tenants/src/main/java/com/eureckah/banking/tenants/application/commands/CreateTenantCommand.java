@@ -1,14 +1,14 @@
 package com.eureckah.banking.tenants.application.commands;
 
-import java.util.UUID;
+import com.eureckah.banking.tenants.domain.model.User;
 
-public record CreateTenantCommand(String name, UUID ownerUserId) {
+public record CreateTenantCommand(String name, User user) {
     public CreateTenantCommand {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("name must not be blank");
         }
-        if (ownerUserId == null) {
-            throw new IllegalArgumentException("ownerUserId must not be null");
+        if (user == null) {
+            throw new IllegalArgumentException("user must not be null");
         }
     }
 }

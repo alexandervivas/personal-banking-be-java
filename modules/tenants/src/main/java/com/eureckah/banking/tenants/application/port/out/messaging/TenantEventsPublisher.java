@@ -1,4 +1,4 @@
-package com.eureckah.banking.tenants.application.port.out;
+package com.eureckah.banking.tenants.application.port.out.messaging;
 
 import com.eureckah.banking.tenants.domain.events.TenantEvent;
 

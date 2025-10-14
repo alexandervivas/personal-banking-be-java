@@ -1,6 +1,6 @@
 package com.eureckah.banking.tenants.infrastructure.adapter.out.jpa.tenant;
 
-import com.eureckah.banking.tenants.application.port.out.TenantRepository;
+import com.eureckah.banking.tenants.application.port.out.storage.TenantRepository;
 import com.eureckah.banking.tenants.domain.model.Tenant;
 
 import org.springframework.context.annotation.Primary;

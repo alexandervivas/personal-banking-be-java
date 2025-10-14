@@ -34,7 +34,7 @@ public class TenantsGrpcService extends TenantsServiceGrpc.TenantsServiceImplBas
             UUID userId = getUserId(request, responseObserver);
             if (userId == null) return;
 
-            var command = new CreateTenantCommand(request.getName(), userId);
+            var command = new CreateTenantCommand(request.getName(), null);
             var result = createTenantUseCase.handle(command);
             var response = TenantGrpcMapper.toResponse(result.id());
 

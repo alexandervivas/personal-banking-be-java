@@ -16,4 +16,8 @@ public class Tenant {
     public static Tenant create(String name) {
         return builder().name(name).build();
     }
+
+    public Tenant updateId(UUID id) {
+        return builder().id(id).name(this.name).build();
+    }
 }
