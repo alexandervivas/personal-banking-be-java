@@ -36,7 +36,7 @@ public class TenantsGrpcService extends TenantsServiceGrpc.TenantsServiceImplBas
 
             var command = new CreateTenantCommand(request.getName(), null);
             var result = createTenantUseCase.handle(command);
-            var response = TenantGrpcMapper.toResponse(result.id());
+            var response = GrpcResponseConverter.toCreateTenantResponse(result.id());
 
             responseObserver.onNext(response);
             responseObserver.onCompleted();
