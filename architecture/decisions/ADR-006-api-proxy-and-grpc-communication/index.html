@@ -11,19 +11,19 @@
       
       
       
-      <link rel="icon" href="/assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
     
     
       
-        <title>Personal Banking — Docs</title>
+        <title>ADR-006: API Proxy and gRPC Module Communication - Personal Banking — Docs</title>
       
     
     
-      <link rel="stylesheet" href="/assets/stylesheets/main.84d31ad4.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
       
         
-        <link rel="stylesheet" href="/assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -42,7 +42,7 @@
       
     
     
-    <script>__md_scope=new URL("/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -67,6 +67,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#adr-006-api-proxy-and-grpc-module-communication" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -77,7 +82,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/." title="Personal Banking — Docs" class="md-header__button md-logo" aria-label="Personal Banking — Docs" data-md-component="logo">
+    <a href="../../.." title="Personal Banking — Docs" class="md-header__button md-logo" aria-label="Personal Banking — Docs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -97,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              ADR-006: API Proxy and gRPC Module Communication
             
           </span>
         </div>
@@ -200,7 +205,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/." class="md-tabs__link">
+      <a href="../../.." class="md-tabs__link">
         
   
   
@@ -221,7 +226,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/architecture/c4-context/" class="md-tabs__link">
+        <a href="../../c4-context/" class="md-tabs__link">
           
   
   
@@ -241,7 +246,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/contracts/openapi/v1/CHANGELOG/" class="md-tabs__link">
+        <a href="../../../contracts/openapi/v1/CHANGELOG/" class="md-tabs__link">
           
   
   
@@ -261,7 +266,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/governance/scope-CHANGELOG/" class="md-tabs__link">
+        <a href="../../../governance/scope-CHANGELOG/" class="md-tabs__link">
           
   
   
@@ -281,7 +286,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/ux/stitch-prompt/" class="md-tabs__link">
+        <a href="../../../ux/stitch-prompt/" class="md-tabs__link">
           
   
   
@@ -301,7 +306,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/ops/deployment-render/" class="md-tabs__link">
+        <a href="../../../ops/deployment-render/" class="md-tabs__link">
           
   
   
@@ -335,7 +340,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/." title="Personal Banking — Docs" class="md-nav__button md-logo" aria-label="Personal Banking — Docs" data-md-component="logo">
+    <a href="../../.." title="Personal Banking — Docs" class="md-nav__button md-logo" aria-label="Personal Banking — Docs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -365,7 +370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -430,7 +435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/architecture/c4-context/" class="md-nav__link">
+      <a href="../../c4-context/" class="md-nav__link">
         
   
   
@@ -453,7 +458,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/architecture/c4-container/" class="md-nav__link">
+      <a href="../../c4-container/" class="md-nav__link">
         
   
   
@@ -476,7 +481,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/architecture/decisions/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -549,7 +554,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/contracts/openapi/v1/CHANGELOG/" class="md-nav__link">
+      <a href="../../../contracts/openapi/v1/CHANGELOG/" class="md-nav__link">
         
   
   
@@ -572,7 +577,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/contracts/events/v1/CHANGELOG/" class="md-nav__link">
+      <a href="../../../contracts/events/v1/CHANGELOG/" class="md-nav__link">
         
   
   
@@ -645,7 +650,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/governance/scope-CHANGELOG/" class="md-nav__link">
+      <a href="../../../governance/scope-CHANGELOG/" class="md-nav__link">
         
   
   
@@ -668,7 +673,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/governance/product-CHANGELOG/" class="md-nav__link">
+      <a href="../../../governance/product-CHANGELOG/" class="md-nav__link">
         
   
   
@@ -691,7 +696,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/governance/SECURITY/" class="md-nav__link">
+      <a href="../../../governance/SECURITY/" class="md-nav__link">
         
   
   
@@ -714,7 +719,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/governance/SLOs-SLIs/" class="md-nav__link">
+      <a href="../../../governance/SLOs-SLIs/" class="md-nav__link">
         
   
   
@@ -737,7 +742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/governance/AGENTS/" class="md-nav__link">
+      <a href="../../../governance/AGENTS/" class="md-nav__link">
         
   
   
@@ -810,7 +815,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ux/stitch-prompt/" class="md-nav__link">
+      <a href="../../../ux/stitch-prompt/" class="md-nav__link">
         
   
   
@@ -883,7 +888,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ops/deployment-render/" class="md-nav__link">
+      <a href="../../../ops/deployment-render/" class="md-nav__link">
         
   
   
@@ -923,6 +928,52 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#status" class="md-nav__link">
+    <span class="md-ellipsis">
+      Status
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consequences
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -934,8 +985,51 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+  
+  
+
+
+<h1 id="adr-006-api-proxy-and-grpc-module-communication">ADR-006: API Proxy and gRPC Module Communication<a class="headerlink" href="#adr-006-api-proxy-and-grpc-module-communication" title="Permanent link">&para;</a></h1>
+<h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">&para;</a></h2>
+<p>Accepted — 2025-03-05</p>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>We are splitting the backend into independently deployable modules so we can scale domain capabilities at different cadences. Each module needs uniform security controls, yet we cannot duplicate authentication, authorization, or external exposure logic across them. We also must support both synchronous (HTTP) and asynchronous (RabbitMQ) ingress from external clients without leaking module boundaries.</p>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Introduce a dedicated <strong>API module</strong> that terminates all external traffic, centralizes authentication/authorization, and acts as a proxy to downstream modules.</li>
+<li>Expose external interfaces exclusively via the API module:</li>
+<li>HTTPS/REST endpoints for web and partner clients.</li>
+<li>RabbitMQ consumers/producers for asynchronous integrations.</li>
+<li>Standardize <strong>gRPC</strong> as the protocol for API-to-module RPC. The API module invokes each business module over gRPC after enforcing security and tenant policies.</li>
+<li>Require every business module to expose a gRPC server port for the API proxy and remove any direct HTTP exposure from those modules.</li>
+<li>Keep all non-API inter-module collaboration asynchronous via RabbitMQ events; business modules publish and consume domain events instead of calling each other directly over gRPC.</li>
+<li>Allow the API module to call any module over gRPC so it can orchestrate composite workflows while preserving least-privilege checks.</li>
+</ul>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Security and access control become consistent because only the API module faces external clients.</li>
+<li>Modules must ship and operate gRPC servers, schemas, and client stubs; this adds build/runtime dependencies but keeps contracts explicit.</li>
+<li>Event-driven choreography remains the default between business modules, so each module must own RabbitMQ bindings for the events it emits and consumes.</li>
+<li>The API module becomes a critical path proxy. We need resiliency patterns (timeouts, retries, circuit breakers) to prevent cascading failures.</li>
+<li>Internal load balancing and service discovery for gRPC endpoints are now required as modules scale horizontally.</li>
+<li>Observability must include tracing across the API proxy and gRPC calls so we can diagnose cross-module flows.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -972,12 +1066,12 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "/", "features": ["navigation.tabs", "navigation.sections", "navigation.tracking", "navigation.top", "toc.follow", "content.code.copy", "content.code.annotate"], "search": "/assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.tracking", "navigation.top", "toc.follow", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="/assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
-        <script src="/javascripts/mermaid.mjs" type="module"></script>
+        <script src="../../../javascripts/mermaid.mjs" type="module"></script>
       
     
   </body>

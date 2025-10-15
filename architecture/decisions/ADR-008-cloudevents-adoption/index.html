@@ -11,19 +11,19 @@
       
       
       
-      <link rel="icon" href="/assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
     
     
       
-        <title>Personal Banking — Docs</title>
+        <title>ADR-008 — CloudEvents adoption for domain events - Personal Banking — Docs</title>
       
     
     
-      <link rel="stylesheet" href="/assets/stylesheets/main.84d31ad4.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
       
         
-        <link rel="stylesheet" href="/assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -42,7 +42,7 @@
       
     
     
-    <script>__md_scope=new URL("/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -67,6 +67,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#adr-008-cloudevents-adoption-for-domain-events" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -77,7 +82,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/." title="Personal Banking — Docs" class="md-header__button md-logo" aria-label="Personal Banking — Docs" data-md-component="logo">
+    <a href="../../.." title="Personal Banking — Docs" class="md-header__button md-logo" aria-label="Personal Banking — Docs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -97,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              ADR-008 — CloudEvents adoption for domain events
             
           </span>
         </div>
@@ -200,7 +205,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="/." class="md-tabs__link">
+      <a href="../../.." class="md-tabs__link">
         
   
   
@@ -221,7 +226,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/architecture/c4-context/" class="md-tabs__link">
+        <a href="../../c4-context/" class="md-tabs__link">
           
   
   
@@ -241,7 +246,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/contracts/openapi/v1/CHANGELOG/" class="md-tabs__link">
+        <a href="../../../contracts/openapi/v1/CHANGELOG/" class="md-tabs__link">
           
   
   
@@ -261,7 +266,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/governance/scope-CHANGELOG/" class="md-tabs__link">
+        <a href="../../../governance/scope-CHANGELOG/" class="md-tabs__link">
           
   
   
@@ -281,7 +286,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/ux/stitch-prompt/" class="md-tabs__link">
+        <a href="../../../ux/stitch-prompt/" class="md-tabs__link">
           
   
   
@@ -301,7 +306,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="/ops/deployment-render/" class="md-tabs__link">
+        <a href="../../../ops/deployment-render/" class="md-tabs__link">
           
   
   
@@ -335,7 +340,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/." title="Personal Banking — Docs" class="md-nav__button md-logo" aria-label="Personal Banking — Docs" data-md-component="logo">
+    <a href="../../.." title="Personal Banking — Docs" class="md-nav__button md-logo" aria-label="Personal Banking — Docs" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -365,7 +370,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -430,7 +435,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/architecture/c4-context/" class="md-nav__link">
+      <a href="../../c4-context/" class="md-nav__link">
         
   
   
@@ -453,7 +458,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/architecture/c4-container/" class="md-nav__link">
+      <a href="../../c4-container/" class="md-nav__link">
         
   
   
@@ -476,7 +481,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/architecture/decisions/" class="md-nav__link">
+      <a href="../" class="md-nav__link">
         
   
   
@@ -549,7 +554,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/contracts/openapi/v1/CHANGELOG/" class="md-nav__link">
+      <a href="../../../contracts/openapi/v1/CHANGELOG/" class="md-nav__link">
         
   
   
@@ -572,7 +577,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/contracts/events/v1/CHANGELOG/" class="md-nav__link">
+      <a href="../../../contracts/events/v1/CHANGELOG/" class="md-nav__link">
         
   
   
@@ -645,7 +650,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/governance/scope-CHANGELOG/" class="md-nav__link">
+      <a href="../../../governance/scope-CHANGELOG/" class="md-nav__link">
         
   
   
@@ -668,7 +673,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/governance/product-CHANGELOG/" class="md-nav__link">
+      <a href="../../../governance/product-CHANGELOG/" class="md-nav__link">
         
   
   
@@ -691,7 +696,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/governance/SECURITY/" class="md-nav__link">
+      <a href="../../../governance/SECURITY/" class="md-nav__link">
         
   
   
@@ -714,7 +719,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/governance/SLOs-SLIs/" class="md-nav__link">
+      <a href="../../../governance/SLOs-SLIs/" class="md-nav__link">
         
   
   
@@ -737,7 +742,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/governance/AGENTS/" class="md-nav__link">
+      <a href="../../../governance/AGENTS/" class="md-nav__link">
         
   
   
@@ -810,7 +815,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ux/stitch-prompt/" class="md-nav__link">
+      <a href="../../../ux/stitch-prompt/" class="md-nav__link">
         
   
   
@@ -883,7 +888,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/ops/deployment-render/" class="md-nav__link">
+      <a href="../../../ops/deployment-render/" class="md-nav__link">
         
   
   
@@ -923,6 +928,61 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#context" class="md-nav__link">
+    <span class="md-ellipsis">
+      Context
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      Decision
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consequences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Consequences
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternatives-considered" class="md-nav__link">
+    <span class="md-ellipsis">
+      Alternatives considered
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#follow-up" class="md-nav__link">
+    <span class="md-ellipsis">
+      Follow-up
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -934,8 +994,63 @@
             <div class="md-content" data-md-component="content">
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+  
+  
+
+
+<h1 id="adr-008-cloudevents-adoption-for-domain-events">ADR-008 — CloudEvents adoption for domain events<a class="headerlink" href="#adr-008-cloudevents-adoption-for-domain-events" title="Permanent link">&para;</a></h1>
+<p>Status: Accepted
+Date: 2025-10-15</p>
+<h2 id="context">Context<a class="headerlink" href="#context" title="Permanent link">&para;</a></h2>
+<p>We publish domain events from the Tenants service to RabbitMQ. We already standardized on Avro for event data (see ADR-003 for message versioning). To interoperate with external systems and future event gateways, we want our events to comply with <a href="https://cloudevents.io/">CloudEvents 1.0</a>.</p>
+<p>CloudEvents defines a small set of metadata attributes (id, source, type, specversion, time, subject, datacontenttype, dataschema, etc.) and multiple transport bindings (HTTP, Kafka, AMQP 1.0, NATS, etc.). RabbitMQ uses AMQP 0.9.1 which does not have an official CloudEvents binding, but CloudEvents allows binary content mode where attributes are carried as transport-native metadata (headers/properties).</p>
+<h2 id="decision">Decision<a class="headerlink" href="#decision" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Adopt CloudEvents core specification v1.0.</li>
+<li>Use Binary Content Mode: event data is the Avro-encoded bytes; CloudEvents attributes are mapped to message headers.</li>
+<li>Transport: RabbitMQ (AMQP 0.9.1). We map CloudEvents attributes to AMQP message headers using the conventional <code>ce_</code> prefix as follows:</li>
+<li><code>ce_specversion</code> = <code>1.0</code></li>
+<li><code>ce_type</code> = event name (e.g., <code>tenant.created.v1</code>)</li>
+<li><code>ce_source</code> = logical emitter id: <code>tenants-service</code> (subject to future configuration)</li>
+<li><code>ce_id</code> = unique event id (UUID) — aligns with Avro field <code>eventId</code></li>
+<li><code>ce_time</code> = RFC3339 timestamp — aligns with Avro field <code>occurredAt</code></li>
+<li><code>ce_subject</code> = domain identifier relevant to the event (<code>tenantId</code> for tenant events, <code>userId</code> for user events)</li>
+<li><code>ce_datacontenttype</code> = <code>application/avro</code></li>
+<li><code>ce_dataschema</code> = URI identifying the schema. We use <code>urn:avro:schema:&lt;full.avro.namespace.Name&gt;</code> (e.g., <code>urn:avro:schema:com.eureckah.banking.events.v1.TenantCreated</code>).</li>
+<li>Exchange strategy is unchanged: topic exchanges per event type (<code>events.v1.&lt;event&gt;</code>). Routing key remains configurable (default: <code>events</code>).</li>
+</ul>
+<h2 id="consequences">Consequences<a class="headerlink" href="#consequences" title="Permanent link">&para;</a></h2>
+<ul>
+<li>External consumers that understand CloudEvents can treat our messages as CloudEvents 1.0 using the binary-mode mapping.</li>
+<li>Our Avro contracts remain the source of truth for the event data payload; CloudEvents attributes live in headers.</li>
+<li>We avoid introducing an additional SDK; the mapping is implemented via message headers to keep the change minimal.</li>
+</ul>
+<h2 id="alternatives-considered">Alternatives considered<a class="headerlink" href="#alternatives-considered" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Structured mode (serialize full CloudEvent as JSON): Rejected. Would complicate Avro usage or require nested JSON + Avro; binary mode better fits Avro binary payloads.</li>
+<li>Using CloudEvents SDK for Java: Deferred. Not necessary for the minimal scope; may be adopted later for validation and builder APIs.</li>
+</ul>
+<h2 id="follow-up">Follow-up<a class="headerlink" href="#follow-up" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Consider making <code>ce_source</code> configurable via environment variable if multiple emitters are introduced.</li>
+<li>If we add Kafka or HTTP outputs, define corresponding CloudEvents bindings explicitly.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -972,12 +1087,12 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "/", "features": ["navigation.tabs", "navigation.sections", "navigation.tracking", "navigation.top", "toc.follow", "content.code.copy", "content.code.annotate"], "search": "/assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.tracking", "navigation.top", "toc.follow", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="/assets/javascripts/bundle.f55a23d4.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
       
-        <script src="/javascripts/mermaid.mjs" type="module"></script>
+        <script src="../../../javascripts/mermaid.mjs" type="module"></script>
       
     
   </body>
