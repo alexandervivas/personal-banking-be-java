@@ -19,8 +19,7 @@ public class ProfileRepositoryAdapter implements ProfileRepository {
 
     private final ProfileJpaRepository jpa;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @PersistenceContext private EntityManager entityManager;
 
     public ProfileRepositoryAdapter(ProfileJpaRepository jpa) {
         this.jpa = jpa;
@@ -29,8 +28,7 @@ public class ProfileRepositoryAdapter implements ProfileRepository {
     @Override
     public UUID save(Profile profile) {
         var tenantRef =
-                entityManager.getReference(
-                        TenantJpaEntity.class, profile.getTenant().getId());
+                entityManager.getReference(TenantJpaEntity.class, profile.getTenant().getId());
         var userId = profile.getUser().getId();
         var userRef = entityManager.getReference(UserJpaEntity.class, userId);
 
