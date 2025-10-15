@@ -1,0 +1,4 @@
+### Get tenant details
+GET {{api}}/api/v1/tenants
+Accept: application/json
+Authorization: Bearer {{authToken}}

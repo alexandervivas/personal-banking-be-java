@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package com.eureckah.banking.api.tenants.v1;
+
+option java_multiple_files = true;
+option java_package = "com.eureckah.banking.tenants.proto.v1";
+option java_outer_classname = "TenantsProto";
+
+service TenantsService {
+  rpc CreateTenant (CreateTenantRequest) returns (CreateTenantResponse) {}
+}
+
+message CreateTenantRequest {
+  string name = 1;
+  // The ID of the user making the request; will become the tenant owner
+  string user_id = 2; // UUID as string
+}
+
+message CreateTenantResponse {
+  string tenant_id = 1; // UUID as string
+}
