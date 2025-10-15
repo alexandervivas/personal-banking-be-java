@@ -7,7 +7,7 @@ import io.grpc.ManagedChannel;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.grpc.client.channel.GrpcChannelFactory;
+import org.springframework.grpc.client.GrpcChannelFactory;
 
 @Configuration
 public class GrpcClientsConfig {

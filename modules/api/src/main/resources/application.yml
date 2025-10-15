@@ -5,14 +5,13 @@ spring:
   application:
     name: api
 
-  grpc:
-    client:
-      channels:
-        tenants:
-          address: "discovery:///tenants"
-          enableKeepAlive: true
-          keepAliveWithoutCalls: true
-          negotiationType: PLAINTEXT
+grpc:
+  client:
+    tenants:
+      address: "discovery:///tenants"
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: PLAINTEXT
 
 eureka:
   instance:
