@@ -1,8 +1,8 @@
 plugins {
-	java
-    id("org.springframework.boot") version "3.5.6"
-    id("io.spring.dependency-management") version "1.1.7"
-    id("com.google.protobuf") version "0.9.4"
+    java
+    id("org.springframework.boot") version "3.5.6" apply false
+    id("io.spring.dependency-management") version "1.1.7" apply false
+    id("com.google.protobuf") version "0.9.4" apply false
 }
 
 group = "com.eureckah.banking"
