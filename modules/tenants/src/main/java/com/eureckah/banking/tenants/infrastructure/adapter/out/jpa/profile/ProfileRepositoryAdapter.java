@@ -6,6 +6,7 @@ import com.eureckah.banking.tenants.infrastructure.adapter.out.jpa.tenant.Tenant
 import com.eureckah.banking.tenants.infrastructure.adapter.out.jpa.user.UserJpaEntity;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -17,18 +18,21 @@ import java.util.UUID;
 public class ProfileRepositoryAdapter implements ProfileRepository {
 
     private final ProfileJpaRepository jpa;
-    private final EntityManager em;
 
-    public ProfileRepositoryAdapter(ProfileJpaRepository jpa, EntityManager em) {
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public ProfileRepositoryAdapter(ProfileJpaRepository jpa) {
         this.jpa = jpa;
-        this.em = em;
     }
 
     @Override
     public UUID save(Profile profile) {
-        var tenantRef = em.getReference(TenantJpaEntity.class, profile.getTenant().getId());
+        var tenantRef =
+                entityManager.getReference(
+                        TenantJpaEntity.class, profile.getTenant().getId());
         var userId = profile.getUser().getId();
-        var userRef = em.getReference(UserJpaEntity.class, userId);
+        var userRef = entityManager.getReference(UserJpaEntity.class, userId);
 
         var entity =
                 ProfileJpaEntity.builder()
