@@ -37,9 +37,11 @@ public class CreateTenantCommandHandler implements CreateTenantUseCase {
     @Transactional
     public Optional<UUID> handle(CreateTenantCommand command) {
         Tenant tenant = createTenant(command);
-        UUID ownerId = assignTenantOwner(command, tenant);
-        TenantView tenantView = TenantMapper.toView(tenant, ownerId);
+        TenantView tenantView = TenantMapper.toView(tenant, command.user().getId());
+
+        createTenantOwner(command, tenant);
         notifyTenantCreation(tenantView);
+
         return Optional.of(tenant.getId());
     }
 
@@ -53,8 +55,8 @@ public class CreateTenantCommandHandler implements CreateTenantUseCase {
         return tenant.updateId(id);
     }
 
-    private UUID assignTenantOwner(CreateTenantCommand command, Tenant tenant) {
+    private void createTenantOwner(CreateTenantCommand command, Tenant tenant) {
         Profile profile = Profile.create(tenant, command.user(), Role.OWNER);
-        return profileRepository.save(profile);
+        profileRepository.save(profile);
     }
 }
