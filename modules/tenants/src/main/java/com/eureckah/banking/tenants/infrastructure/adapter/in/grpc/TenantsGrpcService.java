@@ -4,6 +4,9 @@ import com.eureckah.banking.tenants.application.commands.CreateTenantCommand;
 import com.eureckah.banking.tenants.application.exceptions.FailedCommandException;
 import com.eureckah.banking.tenants.application.exceptions.InvalidCommandException;
 import com.eureckah.banking.tenants.application.port.in.CreateTenantUseCase;
+import com.eureckah.banking.tenants.application.port.in.GetUserUseCase;
+import com.eureckah.banking.tenants.application.queries.GetUserQuery;
+import com.eureckah.banking.tenants.domain.model.User;
 import com.eureckah.banking.tenants.proto.v1.CreateTenantRequest;
 import com.eureckah.banking.tenants.proto.v1.CreateTenantResponse;
 import com.eureckah.banking.tenants.proto.v1.TenantsServiceGrpc;
@@ -15,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.grpc.server.service.GrpcService;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @GrpcService
@@ -22,9 +26,12 @@ import java.util.UUID;
 public class TenantsGrpcService extends TenantsServiceGrpc.TenantsServiceImplBase {
 
     private final CreateTenantUseCase createTenantUseCase;
+    private final GetUserUseCase getUserUseCase;
 
-    public TenantsGrpcService(CreateTenantUseCase createTenantUseCase) {
+    public TenantsGrpcService(
+            CreateTenantUseCase createTenantUseCase, GetUserUseCase getUserUseCase) {
         this.createTenantUseCase = createTenantUseCase;
+        this.getUserUseCase = getUserUseCase;
     }
 
     @Override
@@ -34,21 +41,13 @@ public class TenantsGrpcService extends TenantsServiceGrpc.TenantsServiceImplBas
             UUID userId = getUserId(request, responseObserver);
             if (userId == null) return;
 
-            var command = new CreateTenantCommand(request.getName(), null);
-            var optionalUUID = createTenantUseCase.handle(command);
+            var user = validateAndGetUser(userId, responseObserver);
+            if (user.isEmpty()) return;
 
-            if (optionalUUID.isEmpty()) {
-                responseObserver.onError(
-                        Status.FAILED_PRECONDITION
-                                .withDescription("Failed to create tenant")
-                                .asRuntimeException());
-                return;
-            }
+            var tenantId = executeTenantCreation(request.getName(), user.get(), responseObserver);
+            if (tenantId.isEmpty()) return;
 
-            var response = GrpcResponseConverter.toCreateTenantResponse(optionalUUID.get());
-
-            responseObserver.onNext(response);
-            responseObserver.onCompleted();
+            sendSuccessResponse(tenantId.get(), responseObserver);
         } catch (InvalidCommandException ex) {
             log.error(
                     "Invalid create tenant command for name {}: {}",
@@ -85,5 +84,42 @@ public class TenantsGrpcService extends TenantsServiceGrpc.TenantsServiceImplBas
             return null;
         }
         return ownerId;
+    }
+
+    private Optional<User> validateAndGetUser(
+            UUID userId, StreamObserver<CreateTenantResponse> responseObserver) {
+        var query = new GetUserQuery(userId);
+        var user = getUserUseCase.handle(query);
+
+        if (user.isEmpty()) {
+            responseObserver.onError(
+                    Status.FAILED_PRECONDITION
+                            .withDescription("User with id " + userId + " not found")
+                            .asRuntimeException());
+        }
+
+        return user;
+    }
+
+    private Optional<UUID> executeTenantCreation(
+            String tenantName, User user, StreamObserver<CreateTenantResponse> responseObserver) {
+        var command = new CreateTenantCommand(tenantName, user);
+        var tenantId = createTenantUseCase.handle(command);
+
+        if (tenantId.isEmpty()) {
+            responseObserver.onError(
+                    Status.FAILED_PRECONDITION
+                            .withDescription("Failed to create tenant")
+                            .asRuntimeException());
+        }
+
+        return tenantId;
+    }
+
+    private void sendSuccessResponse(
+            UUID tenantId, StreamObserver<CreateTenantResponse> responseObserver) {
+        var response = GrpcResponseConverter.toCreateTenantResponse(tenantId);
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 }
