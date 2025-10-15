@@ -14,12 +14,14 @@ import io.cucumber.java.en.When;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
+@Component
 public class TenantsSteps {
 
     @Autowired private MockMvc mockMvc;
