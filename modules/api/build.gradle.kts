@@ -8,6 +8,7 @@ group = "com.eureckah.banking"
 version = "0.0.1-SNAPSHOT"
 
 extra["springGrpcVersion"] = "0.11.0"
+extra["springCloudVersion"] = "2025.0.0"
 
 repositories {
     mavenCentral()
@@ -21,6 +22,9 @@ dependencies {
     // gRPC client
     implementation("org.springframework.grpc:spring-grpc-spring-boot-starter")
     implementation(project(":modules:shared"))
+
+    // eureka client
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 
     // BDD / Cucumber
     testImplementation("io.cucumber:cucumber-java:7.18.1")
@@ -41,6 +45,7 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.grpc:spring-grpc-dependencies:${property("springGrpcVersion")}")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
     }
 }
 

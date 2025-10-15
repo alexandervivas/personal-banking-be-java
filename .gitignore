@@ -35,3 +35,5 @@ out/
 .vscode/
 
 .git-hooks-cache/
+
+*.private.env.json

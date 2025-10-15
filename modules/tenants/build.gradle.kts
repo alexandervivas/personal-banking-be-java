@@ -12,10 +12,12 @@ group = "com.eureckah.banking"
 version = "0.0.1-SNAPSHOT"
 
 extra["springGrpcVersion"] = "0.11.0"
+extra["springCloudVersion"] = "2025.0.0"
 
 dependencies {
     // spring boot
     implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     // gRPC server
@@ -23,6 +25,9 @@ dependencies {
     implementation("org.springframework.grpc:spring-grpc-spring-boot-starter")
     implementation(project(":modules:shared"))
     compileOnly("javax.annotation:javax.annotation-api:1.3.2")
+
+    // eureka client
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 
     // database
     runtimeOnly("com.h2database:h2")
@@ -44,5 +49,6 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.grpc:spring-grpc-dependencies:${property("springGrpcVersion")}")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
     }
 }
