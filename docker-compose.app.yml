@@ -1,0 +1,88 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-/}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  eureka-server:
+    build:
+      context: .
+      dockerfile: modules/eureka-server/Dockerfile
+    image: personal-banking/eureka-server:local
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  tenants:
+    build:
+      context: .
+      # Dockerfile path resolves within the repo
+      dockerfile: modules/tenants/Dockerfile
+    image: personal-banking/tenants:local
+    container_name: tenants
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      TENANTS_HTTP_PORT: ${TENANTS_HTTP_PORT:-8081}
+      TENANTS_GRPC_PORT: ${TENANTS_GRPC_PORT:-9091}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+      RABBITMQ_VHOST: ${RABBITMQ_VHOST:-/}
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      EUREKA_REGISTER: "true"
+      EUREKA_FETCH: "true"
+      EVENTS_EXCHANGE_PREFIX: ${EVENTS_EXCHANGE_PREFIX:-events.v1.}
+      EVENTS_ROUTING_KEY: ${EVENTS_ROUTING_KEY:-events}
+    ports:
+      - "8081:8081"
+      - "9091:9091"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: modules/api/Dockerfile
+    image: personal-banking/api:local
+    container_name: api
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      tenants:
+        condition: service_started
+    environment:
+      API_HTTP_PORT: ${API_HTTP_PORT:-8080}
+      EUREKA_URL: http://eureka-server:8761/eureka/
+      EUREKA_REGISTER: "false"
+      EUREKA_FETCH: "true"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

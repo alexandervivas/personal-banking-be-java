@@ -2,14 +2,33 @@
 
 ```mermaid
 flowchart LR
+  %% Classes
+  classDef roadmap stroke-dasharray: 5 5,stroke:#888,color:#666;
+
   User[End User] -->|Web| NextJS[Next.js Frontend]
-  Partner[Partner Systems] -->|AMQP| API[API Module]
-  NextJS -->|HTTPS /v1| API
-  API -->|gRPC| Modules[Business Modules (API RPC only)]
-  Modules -->|JDBC| PG[(PostgreSQL)]
-  Modules -->|AMQP events| RMQ[(RabbitMQ)]
+  NextJS -->|HTTPS /v1| API[API Module]
+
+  %% Partners interact via RabbitMQ (AMQP)
+  Partner[Partner Systems] -->|AMQP| RMQ[RabbitMQ]
+
+  %% Core interactions within the platform
+  API -->|gRPC| Modules[Business Modules]
+  Modules -->|JDBC| H2[H2 in-memory]
+  Modules -->|AMQP events| RMQ
   RMQ -->|AMQP events| Modules
-  API -->|OTEL| OTel[OTel Collector]
+
+  %% Service discovery (Eureka within our platform)
+  API -. register/fetch .-> Eureka[Eureka Server]
+  Modules -. register/fetch .-> Eureka
+
+  %% Observability (roadmap)
+  API -. OTel SDK .-> OTel[OTel Collector]
   OTel --> Prom[Prometheus]
   Prom --> Graf[Grafana]
+
+  %% Future data store (roadmap)
+  Modules -. JDBC .-> PG[PostgreSQL]
+
+  %% Styling roadmap elements
+  class OTel,Prom,Graf,PG roadmap;
 ```

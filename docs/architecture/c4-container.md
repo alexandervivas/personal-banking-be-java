@@ -2,6 +2,9 @@
 
 ```mermaid
 flowchart TB
+  %% Classes
+  classDef roadmap stroke-dasharray: 5 5,stroke:#888,color:#666;
+
   subgraph External
     FE[Next.js App Router]
     Partners[Partner Integrations]
@@ -9,31 +12,50 @@ flowchart TB
 
   subgraph API[API Module]
     REST[REST Controllers / Security Proxy]
-    Ingress[AMQP Consumers / Publishers]
   end
 
-  subgraph Modules[Business Modules (gRPC endpoints + RabbitMQ events)]
+  subgraph Modules[Business Modules]
     Tenants[Tenants Module]
-    Core[Other Domain Modules]
   end
 
   subgraph Infra[Infrastructure]
-    PG[(PostgreSQL)]
-    RMQ[(RabbitMQ)]
+    H2[H2 in-memory]
+    PG[PostgreSQL]
+    RMQ[RabbitMQ]
+    Eureka[Eureka Server]
     FX[FX Provider SPI]
+    OTel[OTel Collector]
+    Prom[Prometheus]
+    Graf[Grafana]
   end
 
+  %% External to API
   FE -->|HTTPS| REST
-  Partners -->|AMQP| Ingress
+  Partners -->|AMQP| RMQ
+
+  %% API to Modules
   REST -->|gRPC| Tenants
-  REST -->|gRPC| Core
-  Ingress -->|gRPC| Tenants
-  Ingress -->|gRPC| Core
-  Tenants -->|JDBC| PG
+
+  %% Messaging
   Tenants -->|AMQP events| RMQ
-  Core -->|AMQP events| RMQ
   RMQ -->|AMQP events| Tenants
-  RMQ -->|AMQP events| Core
-  Core -->|HTTPS| FX
-  REST --> OTel[OTel SDK] --> Prom[Prometheus] --> Graf[Grafana]
+
+  %% Persistence
+  Tenants -->|JDBC| H2
+  Tenants -. JDBC .-> PG
+
+  %% Service Discovery
+  REST -. register/fetch .-> Eureka
+  Tenants -. register/fetch .-> Eureka
+
+  %% Observability (roadmap)
+  REST -. OTel SDK .-> OTel
+  OTel --> Prom
+  Prom --> Graf
+
+  %% FX Provider SPI (roadmap)
+  Tenants -. HTTPS .-> FX
+
+  %% Style roadmap elements
+  class PG,OTel,Prom,Graf,FX roadmap;
 ```

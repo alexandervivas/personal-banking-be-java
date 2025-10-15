@@ -17,8 +17,13 @@ extra["springCloudVersion"] = "2025.0.0"
 dependencies {
     // spring boot
     implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    // messaging
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
+    implementation("org.apache.avro:avro:1.11.3")
 
     // gRPC server
     implementation("io.grpc:grpc-services")

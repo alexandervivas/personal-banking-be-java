@@ -1,3 +1,6 @@
+server:
+  port: ${TENANTS_HTTP_PORT:8081}
+
 spring:
   application:
     name: tenants
@@ -16,16 +19,27 @@ spring:
     console:
       enabled: true
       path: /h2-console
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: ${RABBITMQ_VHOST:/}
+
+messaging:
+  events:
+    exchange-prefix: ${EVENTS_EXCHANGE_PREFIX:events.v1.}
+    routing-key: ${EVENTS_ROUTING_KEY:events}
 
 grpc:
   server:
-    port: 9091
+    port: ${TENANTS_GRPC_PORT:9091}
 
 eureka:
   instance:
     prefer-ip-address: true
   client:
-    register-with-eureka: true
-    fetch-registry: true
+    register-with-eureka: ${EUREKA_REGISTER:true}
+    fetch-registry: ${EUREKA_FETCH:true}
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
