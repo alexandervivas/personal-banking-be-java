@@ -32,6 +32,14 @@ public class IdempotencyService {
                 .map(r -> UUID.fromString(r.getResourceId()));
     }
 
+    /** Return terminal failure status code if present. */
+    public Optional<Integer> findTerminalFailureStatus(String route, String key) {
+        if (key == null) return Optional.empty();
+        return repo.findByRouteAndKey(route, key)
+                .filter(IdempotencyRecordJpaEntity::hasTerminalFailure)
+                .map(IdempotencyRecordJpaEntity::getStatusCode);
+    }
+
     /** Try to create a placeholder record; if a duplicate exists, return Optional.empty(). */
     public Optional<IdempotencyRecordJpaEntity> createPlaceholder(
             String route, String key, UUID userId) {
@@ -77,6 +85,29 @@ public class IdempotencyService {
                     key,
                     route,
                     e);
+        }
+    }
+
+    /** Persist a terminal failure for replaying errors and freeing the key. */
+    public void markFailed(String route, String key, UUID userId, int statusCode) {
+        if (key == null) return;
+        IdempotencyRecordJpaEntity record = repo.findByRouteAndKey(route, key).orElse(null);
+        if (record != null) {
+            record.markFailed(statusCode);
+            repo.save(record);
+            return;
+        }
+        try {
+            IdempotencyRecordJpaEntity rec =
+                    IdempotencyRecordJpaEntity.builder()
+                            .route(route)
+                            .key(key)
+                            .userId(userId)
+                            .build();
+            rec.markFailed(statusCode);
+            repo.save(rec);
+        } catch (Exception e) {
+            log.warn("Failed to persist idempotency failure for key {} route {}", key, route, e);
         }
     }
 }

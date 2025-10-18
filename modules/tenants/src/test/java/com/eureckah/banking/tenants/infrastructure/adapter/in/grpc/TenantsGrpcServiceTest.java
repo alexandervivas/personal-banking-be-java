@@ -329,8 +329,14 @@ public class TenantsGrpcServiceTest {
         assertThat(errRef.get()).isInstanceOf(StatusRuntimeException.class);
         StatusRuntimeException ex = (StatusRuntimeException) errRef.get();
         assertThat(ex.getStatus().getCode().name()).isEqualTo("FAILED_PRECONDITION");
-        // Only placeholder was attempted to be saved
-        verify(idempotencyRepo, times(1)).save(any(IdempotencyRecordJpaEntity.class));
+        // Placeholder then terminal failure should be saved
+        ArgumentCaptor<IdempotencyRecordJpaEntity> recCaptor2 =
+                ArgumentCaptor.forClass(IdempotencyRecordJpaEntity.class);
+        verify(idempotencyRepo, times(2)).save(recCaptor2.capture());
+        var saved = recCaptor2.getAllValues();
+        assertThat(saved.get(0).getStatusCode()).isNull(); // placeholder
+        assertThat(saved.get(1).getStatusCode()).isEqualTo(412); // terminal failure
+        assertThat(saved.get(1).getResourceId()).isNull();
     }
 
     @Test

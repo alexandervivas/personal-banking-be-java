@@ -61,8 +61,19 @@ public class IdempotencyRecordJpaEntity {
         return statusCode != null && resourceId != null && !resourceId.isBlank();
     }
 
+    public boolean hasTerminalFailure() {
+        return statusCode != null
+                && (resourceId == null || resourceId.isBlank())
+                && statusCode >= 400;
+    }
+
     public void markCreated(UUID resourceId) {
         this.statusCode = 201;
         this.resourceId = resourceId.toString();
+    }
+
+    public void markFailed(int statusCode) {
+        this.statusCode = statusCode;
+        this.resourceId = null;
     }
 }

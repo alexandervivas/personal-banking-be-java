@@ -59,6 +59,13 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
                 return;
             }
 
+            // 1b) Replay terminal failure if present
+            Optional<Integer> failure = coordinator.findFailure(route, idempotencyKey);
+            if (failure.isPresent()) {
+                responseObserver.onError(mapHttpStatusToGrpc(failure.get()).asRuntimeException());
+                return;
+            }
+
             // 2) Preconditions
             if (!validate(userId, request, responseObserver)) {
                 return; // validation already reported error
@@ -71,6 +78,11 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
             switch (outcome.type) {
                 case REPLAY -> {
                     sendSuccess(outcome.replayId, responseObserver);
+                    return;
+                }
+                case FAILURE -> {
+                    responseObserver.onError(
+                            mapHttpStatusToGrpc(outcome.failureStatus).asRuntimeException());
                     return;
                 }
                 case TIMEOUT -> {
@@ -90,6 +102,8 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
             // 4) Execute mutation (we won the placeholder race)
             Optional<UUID> createdId = execute(userId, request);
             if (createdId.isEmpty()) {
+                // mark terminal failure so subsequent calls with same key replay the error
+                coordinator.markFailed(route, idempotencyKey, userId, 412);
                 responseObserver.onError(
                         Status.FAILED_PRECONDITION
                                 .withDescription("Failed to create resource")
@@ -121,5 +135,21 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
             responseObserver.onError(
                     Status.UNKNOWN.withDescription("Unexpected error").asRuntimeException());
         }
+    }
+
+    private static Status mapHttpStatusToGrpc(int code) {
+        return switch (code) {
+            case 400, 422 -> Status.INVALID_ARGUMENT;
+            case 401 -> Status.UNAUTHENTICATED;
+            case 403 -> Status.PERMISSION_DENIED;
+            case 404 -> Status.NOT_FOUND;
+            case 409 -> Status.ALREADY_EXISTS;
+            case 412 -> Status.FAILED_PRECONDITION;
+            case 429 -> Status.RESOURCE_EXHAUSTED;
+            case 499 -> Status.CANCELLED;
+            case 500 -> Status.INTERNAL;
+            case 503 -> Status.UNAVAILABLE;
+            default -> Status.UNKNOWN;
+        };
     }
 }

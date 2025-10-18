@@ -20,28 +20,35 @@ public class IdempotentOperationCoordinator {
     public enum AcquireOutcomeType {
         ACQUIRED,
         REPLAY,
+        FAILURE,
         TIMEOUT
     }
 
     public static final class AcquireOutcome {
         public final AcquireOutcomeType type;
         public final UUID replayId; // non-null only for REPLAY
+        public final Integer failureStatus; // non-null only for FAILURE
 
-        private AcquireOutcome(AcquireOutcomeType type, UUID replayId) {
+        private AcquireOutcome(AcquireOutcomeType type, UUID replayId, Integer failureStatus) {
             this.type = type;
             this.replayId = replayId;
+            this.failureStatus = failureStatus;
         }
 
         public static AcquireOutcome acquired() {
-            return new AcquireOutcome(AcquireOutcomeType.ACQUIRED, null);
+            return new AcquireOutcome(AcquireOutcomeType.ACQUIRED, null, null);
         }
 
         public static AcquireOutcome replay(UUID id) {
-            return new AcquireOutcome(AcquireOutcomeType.REPLAY, id);
+            return new AcquireOutcome(AcquireOutcomeType.REPLAY, id, null);
+        }
+
+        public static AcquireOutcome failure(int status) {
+            return new AcquireOutcome(AcquireOutcomeType.FAILURE, null, status);
         }
 
         public static AcquireOutcome timeout() {
-            return new AcquireOutcome(AcquireOutcomeType.TIMEOUT, null);
+            return new AcquireOutcome(AcquireOutcomeType.TIMEOUT, null, null);
         }
     }
 
@@ -54,6 +61,14 @@ public class IdempotentOperationCoordinator {
             return Optional.empty();
         }
         return idempotencyService.findFinalResourceId(route, key);
+    }
+
+    /** Return terminal failure status if present. */
+    public Optional<Integer> findFailure(String route, String key) {
+        if (key == null || key.isBlank()) {
+            return Optional.empty();
+        }
+        return idempotencyService.findTerminalFailureStatus(route, key);
     }
 
     /**
@@ -77,6 +92,10 @@ public class IdempotentOperationCoordinator {
             if (maybeFinal.isPresent()) {
                 return AcquireOutcome.replay(maybeFinal.get());
             }
+            var maybeFailure = idempotencyService.findTerminalFailureStatus(route, key);
+            if (maybeFailure.isPresent()) {
+                return AcquireOutcome.failure(maybeFailure.get());
+            }
             try {
                 Thread.sleep(50);
             } catch (InterruptedException ie) {
@@ -94,5 +113,13 @@ public class IdempotentOperationCoordinator {
             return;
         }
         idempotencyService.markCreated(route, key, userId, resourceId);
+    }
+
+    /** Persist a terminal failure so that subsequent calls replay the error. */
+    public void markFailed(String route, String key, UUID userId, int statusCode) {
+        if (key == null || key.isBlank()) {
+            return;
+        }
+        idempotencyService.markFailed(route, key, userId, statusCode);
     }
 }
