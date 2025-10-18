@@ -1,0 +1,104 @@
+package com.eureckah.banking.tenants.infrastructure.adapter.in.grpc.idempotency;
+
+import com.eureckah.banking.tenants.application.exceptions.FailedCommandException;
+import com.eureckah.banking.tenants.application.exceptions.InvalidCommandException;
+import com.eureckah.banking.tenants.infrastructure.idempotency.IdempotencyService;
+
+import io.grpc.Status;
+import io.grpc.stub.StreamObserver;
+
+import java.util.Optional;
+import java.util.UUID;
+
+/**
+ * Template for idempotent gRPC "create" operations. Subclasses implement resource-specific
+ * validation, mutation, and response mapping.
+ *
+ * @param <Req> gRPC request type
+ * @param <Resp> gRPC response type
+ */
+public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
+
+    private final IdempotencyService idempotencyService;
+
+    protected AbstractIdempotentGrpcCreateHandler(IdempotencyService idempotencyService) {
+        this.idempotencyService = idempotencyService;
+    }
+
+    /** Route identifier used for idempotency scoping, e.g. "tenants.createTenant.v1". */
+    protected abstract String route();
+
+    /** Execute the creation use case and return the created resource id when successful. */
+    protected abstract Optional<UUID> execute(UUID userId, Req request)
+            throws InvalidCommandException, FailedCommandException;
+
+    /** Build and send the success response to the client for the given resource id. */
+    protected abstract void sendSuccess(UUID resourceId, StreamObserver<Resp> responseObserver);
+
+    /**
+     * Validate preconditions (e.g., ensure user exists). If validation fails, this method must send
+     * the appropriate error via responseObserver and return Optional.empty(). If validation passes,
+     * returns a context object or just user id again if not needed.
+     */
+    protected boolean validate(UUID userId, Req request, StreamObserver<Resp> responseObserver) {
+        // Default: no extra validation
+        return true;
+    }
+
+    public void handle(Req request, StreamObserver<Resp> responseObserver) {
+        try {
+            String idempotencyKey = IdempotencyContext.idempotencyKey();
+            String route = route();
+            UUID userId = UUID.fromString(IdempotencyContext.userId());
+
+            // 1) Replay if we already have a final response
+            Optional<UUID> replayId = idempotencyService.findFinalResourceId(route, idempotencyKey);
+            if (replayId.isPresent()) {
+                sendSuccess(replayId.get(), responseObserver);
+                return;
+            }
+
+            // 2) Preconditions
+            if (!validate(userId, request, responseObserver)) {
+                return; // validation already reported error
+            }
+
+            // 3) Create placeholder (best-effort)
+            idempotencyService.createPlaceholder(route, idempotencyKey, userId);
+
+            // 4) Execute mutation
+            Optional<UUID> createdId = execute(userId, request);
+            if (createdId.isEmpty()) {
+                responseObserver.onError(
+                        Status.FAILED_PRECONDITION
+                                .withDescription("Failed to create resource")
+                                .asRuntimeException());
+                return;
+            }
+
+            // 5) Persist final response
+            idempotencyService.markCreated(route, idempotencyKey, userId, createdId.get());
+
+            // 6) Send success
+            sendSuccess(createdId.get(), responseObserver);
+        } catch (IllegalArgumentException ex) {
+            responseObserver.onError(
+                    Status.INVALID_ARGUMENT
+                            .withDescription("x-user-id must be provided")
+                            .asRuntimeException());
+        } catch (InvalidCommandException ex) {
+            responseObserver.onError(
+                    Status.INVALID_ARGUMENT
+                            .withDescription("Invalid command: " + ex.getReason())
+                            .asRuntimeException());
+        } catch (FailedCommandException ex) {
+            responseObserver.onError(
+                    Status.INTERNAL
+                            .withDescription("Failed to process command")
+                            .asRuntimeException());
+        } catch (Exception ex) {
+            responseObserver.onError(
+                    Status.UNKNOWN.withDescription("Unexpected error").asRuntimeException());
+        }
+    }
+}

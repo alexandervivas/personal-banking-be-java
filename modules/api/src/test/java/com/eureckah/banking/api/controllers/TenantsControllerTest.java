@@ -33,10 +33,12 @@ class TenantsControllerTest {
                 .thenReturn(CreateTenantResponse.newBuilder().setTenantId(tenantId).build());
 
         String userId = UUID.randomUUID().toString();
+        String idemKey = UUID.randomUUID().toString();
         mockMvc.perform(
                         post("/v1/tenants")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .header("X-User-Id", userId)
+                                .header("Idempotency-Key", idemKey)
                                 .content("{\"name\":\"Acme Corp\"}"))
                 .andExpect(status().isCreated());
 
@@ -45,6 +47,5 @@ class TenantsControllerTest {
         verify(tenantsStub, times(1)).createTenant(captor.capture());
         CreateTenantRequest req = captor.getValue();
         assertThat(req.getName()).isEqualTo("Acme Corp");
-        assertThat(req.getUserId()).isEqualTo(userId);
     }
 }
