@@ -426,10 +426,14 @@ components:
           type: string
         type:
           type: string
+        currency:
+          type: string
+          enum: [USD, EUR, COP]
       required:
         - id
         - tenantId
         - type
+        - currency
     AccountCreate:
       type: object
       properties:
@@ -437,9 +441,13 @@ components:
           type: string
         type:
           type: string
+        currency:
+          type: string
+          enum: [USD, EUR, COP]
       required:
         - tenantId
         - type
+        - currency
     AccountUpdate:
       allOf:
         - $ref: "#/components/schemas/AccountCreate"

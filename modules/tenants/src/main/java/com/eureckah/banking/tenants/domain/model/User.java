@@ -7,7 +7,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class User {
+public final class User {
 
     private UUID id;
 
