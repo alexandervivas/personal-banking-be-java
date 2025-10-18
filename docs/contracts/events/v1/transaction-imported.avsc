@@ -1,8 +1,11 @@
 {
   "type": "record",
   "name": "TransactionImported",
-  "namespace": "banking.events.v1",
+  "namespace": "com.eureckah.banking.events.v1",
+  "doc": "Event emitted when a transaction is imported from a bank/source",
   "fields": [
+    { "name": "eventId", "type": "string", "doc": "Unique event identifier (UUID)" },
+    { "name": "occurredAt", "type": "string", "doc": "RFC3339 timestamp of when the event occurred" },
     { "name": "tenantId", "type": "string" },
     { "name": "accountId", "type": "string" },
     { "name": "transactionId", "type": "string" },

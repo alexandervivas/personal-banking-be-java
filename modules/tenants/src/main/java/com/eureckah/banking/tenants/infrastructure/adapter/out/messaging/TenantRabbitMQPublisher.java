@@ -61,15 +61,13 @@ public class TenantRabbitMQPublisher implements TenantEventsPublisher {
                     // CloudEvents binary content mode over AMQP 0.9.1 (RabbitMQ) via headers
                     message.getMessageProperties().setContentType("application/avro");
 
-                    Map<String, Object> headers = new HashMap<>();
-                    headers.put("ce_specversion", "1.0");
-                    headers.put("ce_type", payload.name);
-                    headers.put("ce_source", "tenants-service");
-                    headers.put("ce_id", payload.id);
-                    headers.put("ce_time", payload.time);
-                    if (payload.subject != null) headers.put("ce_subject", payload.subject);
-                    headers.put("ce_datacontenttype", "application/avro");
-                    headers.put("ce_dataschema", "urn:avro:schema:" + payload.schema.getFullName());
+                    Map<String, Object> headers =
+                            buildCloudEventHeaders(
+                                    payload.name,
+                                    payload.schema,
+                                    payload.id,
+                                    payload.time,
+                                    payload.subject);
 
                     // Keep schema as non-CE helper header for convenience
                     headers.put("schema", payload.schema.toString());
@@ -131,6 +129,21 @@ public class TenantRabbitMQPublisher implements TenantEventsPublisher {
         writer.write(record, encoder);
         encoder.flush();
         return out.toByteArray();
+    }
+
+    // Package-private for testing
+    Map<String, Object> buildCloudEventHeaders(
+            String name, Schema schema, String id, String time, String subject) {
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("ce_specversion", "1.0");
+        headers.put("ce_type", name);
+        headers.put("ce_source", "tenants-service");
+        headers.put("ce_id", id);
+        headers.put("ce_time", time);
+        if (subject != null) headers.put("ce_subject", subject);
+        headers.put("ce_datacontenttype", "application/avro");
+        headers.put("ce_dataschema", "urn:avro:schema:" + schema.getFullName());
+        return headers;
     }
 
     private record EventPayload(
