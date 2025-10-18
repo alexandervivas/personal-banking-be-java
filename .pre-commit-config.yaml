@@ -24,7 +24,7 @@ repos:
         language: system
         entry: scripts/google-java-format.sh
         args: ["--aosp", "--replace"]
-        files: "^src/.+\\.java$"
+        files: "^modules/.+\\.java$"
 
       # Conventional Commits (local commit-msg hook)
       - id: commitlint

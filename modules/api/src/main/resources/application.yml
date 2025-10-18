@@ -1,0 +1,23 @@
+server:
+  port: ${API_HTTP_PORT:8080}
+
+spring:
+  application:
+    name: api
+
+grpc:
+  client:
+    tenants:
+      address: "discovery:///tenants"
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: PLAINTEXT
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: ${EUREKA_REGISTER:false}
+    fetch-registry: ${EUREKA_FETCH:true}
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}

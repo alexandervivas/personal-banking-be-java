@@ -1,6 +1,5 @@
 .gradle
 build/
-gradle/wrapper
 !**/src/main/**/build/
 !**/src/test/**/build/
 
@@ -36,3 +35,5 @@ out/
 .vscode/
 
 .git-hooks-cache/
+
+*.private.env.json

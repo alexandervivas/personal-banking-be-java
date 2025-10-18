@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package com.eureckah.banking.api.users.v1;
+
+option java_multiple_files = true;
+option java_package = "com.eureckah.banking.users.proto.v1";
+option java_outer_classname = "UsersProto";
+
+service UsersService {
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {}
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+}
+
+message CreateUserResponse {
+  string user_id = 1; // UUID as string
+}
