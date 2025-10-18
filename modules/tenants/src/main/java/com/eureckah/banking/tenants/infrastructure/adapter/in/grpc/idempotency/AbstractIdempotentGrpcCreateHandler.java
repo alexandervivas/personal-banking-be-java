@@ -117,6 +117,7 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
             // 6) Send success
             sendSuccess(createdId.get(), responseObserver);
         } catch (IllegalArgumentException ex) {
+            releaseIdempotencyKeyWithStatusCode(400);
             responseObserver.onError(
                     Status.INVALID_ARGUMENT
                             .withDescription("x-user-id must be provided")
