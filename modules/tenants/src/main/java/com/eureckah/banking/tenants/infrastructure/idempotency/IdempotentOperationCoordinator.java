@@ -49,6 +49,10 @@ public class IdempotentOperationCoordinator {
 
     /** Return previously finalized resource id if present. */
     public Optional<UUID> findFinal(String route, String key) {
+        if (key == null || key.isBlank()) {
+            // No idempotency key provided -> behave as non-idempotent: nothing to replay
+            return Optional.empty();
+        }
         return idempotencyService.findFinalResourceId(route, key);
     }
 
@@ -58,6 +62,10 @@ public class IdempotentOperationCoordinator {
      */
     public AcquireOutcome tryAcquireOrWait(
             String route, String key, UUID userId, Duration timeout) {
+        // If there is no idempotency key, bypass acquire/wait and proceed normally.
+        if (key == null || key.isBlank()) {
+            return AcquireOutcome.acquired();
+        }
         var placeholder = idempotencyService.createPlaceholder(route, key, userId);
         if (placeholder.isPresent()) {
             return AcquireOutcome.acquired();
@@ -81,6 +89,10 @@ public class IdempotentOperationCoordinator {
 
     /** Persist the final created resource for future replays. */
     public void markCreated(String route, String key, UUID userId, UUID resourceId) {
+        if (key == null || key.isBlank()) {
+            // No idempotency key -> nothing to persist
+            return;
+        }
         idempotencyService.markCreated(route, key, userId, resourceId);
     }
 }
