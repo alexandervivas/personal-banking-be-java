@@ -13,9 +13,13 @@ import com.eureckah.banking.tenants.domain.model.User;
 import com.eureckah.banking.tenants.infrastructure.adapter.in.grpc.handlers.CreateTenantIdempotentHandler;
 import com.eureckah.banking.tenants.infrastructure.adapter.in.grpc.idempotency.IdempotencyContext;
 import com.eureckah.banking.tenants.infrastructure.adapter.out.jpa.idempotency.IdempotencyRecordJpaEntity;
+import com.eureckah.banking.tenants.infrastructure.adapter.out.jpa.idempotency.IdempotencyRecordJpaRepository;
+import com.eureckah.banking.tenants.infrastructure.idempotency.IdempotencyService;
+import com.eureckah.banking.tenants.infrastructure.idempotency.IdempotentOperationCoordinator;
 import com.eureckah.banking.tenants.proto.v1.CreateTenantRequest;
 import com.eureckah.banking.tenants.proto.v1.CreateTenantResponse;
 
+import io.grpc.Context;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
@@ -32,23 +36,19 @@ public class TenantsGrpcServiceTest {
     private CreateTenantUseCase createTenantUseCase;
     private GetUserUseCase getUserUseCase;
     private TenantsGrpcService service;
-    private com.eureckah.banking.tenants.infrastructure.adapter.out.jpa.idempotency
-                    .IdempotencyRecordJpaRepository
-            idempotencyRepo;
+    private IdempotencyRecordJpaRepository idempotencyRepo;
 
     @BeforeEach
     void setup() {
         createTenantUseCase = mock(CreateTenantUseCase.class);
         getUserUseCase = mock(GetUserUseCase.class);
-        idempotencyRepo =
-                mock(
-                        com.eureckah.banking.tenants.infrastructure.adapter.out.jpa.idempotency
-                                .IdempotencyRecordJpaRepository.class);
-        var idemSvc =
-                new com.eureckah.banking.tenants.infrastructure.idempotency.IdempotencyService(
-                        idempotencyRepo);
+        idempotencyRepo = mock(IdempotencyRecordJpaRepository.class);
+        var idemSvc = new IdempotencyService(idempotencyRepo);
         var handler =
-                new CreateTenantIdempotentHandler(idemSvc, createTenantUseCase, getUserUseCase);
+                new CreateTenantIdempotentHandler(
+                        new IdempotentOperationCoordinator(idemSvc),
+                        createTenantUseCase,
+                        getUserUseCase);
         service = new TenantsGrpcService(handler);
     }
 
@@ -72,9 +72,8 @@ public class TenantsGrpcServiceTest {
         when(idempotencyRepo.save(any(IdempotencyRecordJpaEntity.class)))
                 .thenAnswer(inv -> inv.getArgument(0));
 
-        io.grpc.Context ctx =
-                IdempotencyContext.withValues(
-                        io.grpc.Context.current(), "test-key", userId.toString());
+        Context ctx =
+                IdempotencyContext.withValues(Context.current(), "test-key", userId.toString());
         ctx.run(
                 () ->
                         service.createTenant(
@@ -112,8 +111,7 @@ public class TenantsGrpcServiceTest {
         CreateTenantRequest request = CreateTenantRequest.newBuilder().setName("Acme Corp").build();
 
         AtomicReference<Throwable> errRef = new AtomicReference<>();
-        io.grpc.Context ctx =
-                IdempotencyContext.withValues(io.grpc.Context.current(), "k", "not-a-uuid");
+        Context ctx = IdempotencyContext.withValues(Context.current(), "k", "not-a-uuid");
         ctx.run(
                 () ->
                         service.createTenant(
@@ -143,8 +141,7 @@ public class TenantsGrpcServiceTest {
         CreateTenantRequest request = CreateTenantRequest.newBuilder().setName("Acme Corp").build();
 
         AtomicReference<Throwable> errRef = new AtomicReference<>();
-        io.grpc.Context ctx =
-                IdempotencyContext.withValues(io.grpc.Context.current(), "key", userId.toString());
+        Context ctx = IdempotencyContext.withValues(Context.current(), "key", userId.toString());
         ctx.run(
                 () ->
                         service.createTenant(
@@ -192,8 +189,7 @@ public class TenantsGrpcServiceTest {
         CreateTenantRequest request = CreateTenantRequest.newBuilder().setName("Acme Corp").build();
 
         // Set up IdempotencyContext by attaching to current gRPC Context
-        io.grpc.Context ctx =
-                IdempotencyContext.withValues(io.grpc.Context.current(), idemKey, userId);
+        Context ctx = IdempotencyContext.withValues(Context.current(), idemKey, userId);
         AtomicReference<CreateTenantResponse> respRef = new AtomicReference<>();
         AtomicReference<Throwable> errRef = new AtomicReference<>();
 
@@ -245,6 +241,7 @@ public class TenantsGrpcServiceTest {
                         .key(idemKey)
                         .userId(userId)
                         .build();
+        //noinspection unchecked
         when(idempotencyRepo.findByRouteAndKey(route, idemKey))
                 .thenReturn(Optional.empty(), Optional.of(placeholder));
         // Save returns the same entity passed so we can inspect captured values
@@ -256,9 +253,7 @@ public class TenantsGrpcServiceTest {
         AtomicReference<CreateTenantResponse> respRef = new AtomicReference<>();
         AtomicReference<Throwable> errRef = new AtomicReference<>();
 
-        io.grpc.Context ctx =
-                IdempotencyContext.withValues(
-                        io.grpc.Context.current(), idemKey, userId.toString());
+        Context ctx = IdempotencyContext.withValues(Context.current(), idemKey, userId.toString());
         ctx.run(
                 () ->
                         service.createTenant(
@@ -313,9 +308,7 @@ public class TenantsGrpcServiceTest {
         CreateTenantRequest request = CreateTenantRequest.newBuilder().setName("Acme Corp").build();
         AtomicReference<Throwable> errRef = new AtomicReference<>();
 
-        io.grpc.Context ctx =
-                IdempotencyContext.withValues(
-                        io.grpc.Context.current(), idemKey, userId.toString());
+        Context ctx = IdempotencyContext.withValues(Context.current(), idemKey, userId.toString());
         ctx.run(
                 () ->
                         service.createTenant(
@@ -342,31 +335,27 @@ public class TenantsGrpcServiceTest {
 
     @Test
     void createTenant_markCreatedFallback_whenNoPlaceholderSaved_savesFinalRecord() {
-        // Simulate race on placeholder (save throws duplicate), then markCreated persists final
+        // Simulate race on placeholder (save throws duplicate); under new semantics we should not
+        // execute
         String idemKey = UUID.randomUUID().toString();
         UUID userId = UUID.randomUUID();
-        UUID tenantId = UUID.randomUUID();
         User user = User.builder().id(userId).name("Bob").email("bob@example.com").build();
 
         when(getUserUseCase.handle(any(GetUserQuery.class))).thenReturn(Optional.of(user));
-        when(createTenantUseCase.handle(any(CreateTenantCommand.class)))
-                .thenReturn(Optional.of(tenantId));
 
         String route = "tenants.createTenant.v1";
+        //noinspection unchecked
         when(idempotencyRepo.findByRouteAndKey(route, idemKey))
                 .thenReturn(Optional.empty(), Optional.empty());
-        // First save (placeholder) throws duplicate; second save (final) succeeds
+        // First save (placeholder) throws duplicate
         when(idempotencyRepo.save(any(IdempotencyRecordJpaEntity.class)))
-                .thenThrow(new org.springframework.dao.DataIntegrityViolationException("dup"))
-                .thenAnswer(inv -> inv.getArgument(0));
+                .thenThrow(new org.springframework.dao.DataIntegrityViolationException("dup"));
 
         CreateTenantRequest request = CreateTenantRequest.newBuilder().setName("Contoso").build();
         AtomicReference<CreateTenantResponse> respRef = new AtomicReference<>();
         AtomicReference<Throwable> errRef = new AtomicReference<>();
 
-        io.grpc.Context ctx =
-                IdempotencyContext.withValues(
-                        io.grpc.Context.current(), idemKey, userId.toString());
+        Context ctx = IdempotencyContext.withValues(Context.current(), idemKey, userId.toString());
         ctx.run(
                 () ->
                         service.createTenant(
@@ -386,10 +375,12 @@ public class TenantsGrpcServiceTest {
                                     public void onCompleted() {}
                                 }));
 
-        assertThat(errRef.get()).isNull();
-        assertThat(respRef.get()).isNotNull();
-        assertThat(respRef.get().getTenantId()).isEqualTo(tenantId.toString());
-        // Two save attempts: one failed placeholder, one final
-        verify(idempotencyRepo, times(2)).save(any(IdempotencyRecordJpaEntity.class));
+        assertThat(respRef.get()).isNull();
+        assertThat(errRef.get()).isInstanceOf(StatusRuntimeException.class);
+        StatusRuntimeException ex = (StatusRuntimeException) errRef.get();
+        assertThat(ex.getStatus().getCode().name()).isEqualTo("ABORTED");
+        // Only placeholder attempt occurred; mutation not executed; no final save
+        verify(createTenantUseCase, never()).handle(any());
+        verify(idempotencyRepo, times(1)).save(any(IdempotencyRecordJpaEntity.class));
     }
 }

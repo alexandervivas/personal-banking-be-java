@@ -2,11 +2,12 @@ package com.eureckah.banking.tenants.infrastructure.adapter.in.grpc.idempotency;
 
 import com.eureckah.banking.tenants.application.exceptions.FailedCommandException;
 import com.eureckah.banking.tenants.application.exceptions.InvalidCommandException;
-import com.eureckah.banking.tenants.infrastructure.idempotency.IdempotencyService;
+import com.eureckah.banking.tenants.infrastructure.idempotency.IdempotentOperationCoordinator;
 
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,10 +20,10 @@ import java.util.UUID;
  */
 public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
 
-    private final IdempotencyService idempotencyService;
+    private final IdempotentOperationCoordinator coordinator;
 
-    protected AbstractIdempotentGrpcCreateHandler(IdempotencyService idempotencyService) {
-        this.idempotencyService = idempotencyService;
+    protected AbstractIdempotentGrpcCreateHandler(IdempotentOperationCoordinator coordinator) {
+        this.coordinator = coordinator;
     }
 
     /** Route identifier used for idempotency scoping, e.g. "tenants.createTenant.v1". */
@@ -52,7 +53,7 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
             UUID userId = UUID.fromString(IdempotencyContext.userId());
 
             // 1) Replay if we already have a final response
-            Optional<UUID> replayId = idempotencyService.findFinalResourceId(route, idempotencyKey);
+            Optional<UUID> replayId = coordinator.findFinal(route, idempotencyKey);
             if (replayId.isPresent()) {
                 sendSuccess(replayId.get(), responseObserver);
                 return;
@@ -63,10 +64,30 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
                 return; // validation already reported error
             }
 
-            // 3) Create placeholder (best-effort)
-            idempotencyService.createPlaceholder(route, idempotencyKey, userId);
+            // 3) Acquire-or-wait idempotent execution
+            var outcome =
+                    coordinator.tryAcquireOrWait(
+                            route, idempotencyKey, userId, Duration.ofSeconds(5));
+            switch (outcome.type) {
+                case REPLAY -> {
+                    sendSuccess(outcome.replayId, responseObserver);
+                    return;
+                }
+                case TIMEOUT -> {
+                    responseObserver.onError(
+                            Status.ABORTED
+                                    .withDescription(
+                                            "Request with the same idempotency key is in progress;"
+                                                    + " retry later")
+                                    .asRuntimeException());
+                    return;
+                }
+                case ACQUIRED -> {
+                    /* proceed */
+                }
+            }
 
-            // 4) Execute mutation
+            // 4) Execute mutation (we won the placeholder race)
             Optional<UUID> createdId = execute(userId, request);
             if (createdId.isEmpty()) {
                 responseObserver.onError(
@@ -77,7 +98,7 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
             }
 
             // 5) Persist final response
-            idempotencyService.markCreated(route, idempotencyKey, userId, createdId.get());
+            coordinator.markCreated(route, idempotencyKey, userId, createdId.get());
 
             // 6) Send success
             sendSuccess(createdId.get(), responseObserver);

@@ -7,7 +7,7 @@ import com.eureckah.banking.tenants.application.queries.GetUserQuery;
 import com.eureckah.banking.tenants.domain.model.User;
 import com.eureckah.banking.tenants.infrastructure.adapter.in.grpc.GrpcResponseConverter;
 import com.eureckah.banking.tenants.infrastructure.adapter.in.grpc.idempotency.AbstractIdempotentGrpcCreateHandler;
-import com.eureckah.banking.tenants.infrastructure.idempotency.IdempotencyService;
+import com.eureckah.banking.tenants.infrastructure.idempotency.IdempotentOperationCoordinator;
 import com.eureckah.banking.tenants.proto.v1.CreateTenantRequest;
 import com.eureckah.banking.tenants.proto.v1.CreateTenantResponse;
 
@@ -27,10 +27,10 @@ public class CreateTenantIdempotentHandler
     private final GetUserUseCase getUserUseCase;
 
     public CreateTenantIdempotentHandler(
-            IdempotencyService idempotencyService,
+            IdempotentOperationCoordinator coordinator,
             CreateTenantUseCase createTenantUseCase,
             GetUserUseCase getUserUseCase) {
-        super(idempotencyService);
+        super(coordinator);
         this.createTenantUseCase = createTenantUseCase;
         this.getUserUseCase = getUserUseCase;
     }
