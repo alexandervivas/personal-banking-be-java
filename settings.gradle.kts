@@ -7,3 +7,5 @@ include("modules:api")
 include("modules:shared")
 
 include("modules:eureka-server")
+
+include("modules:accounts")
