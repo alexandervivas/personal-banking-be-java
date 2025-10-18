@@ -1,4 +1,5 @@
 # Personal Banking API
+
 [![api-ci](https://github.com/alexandervivas/personal-banking-be-java/actions/workflows/ci.yml/badge.svg)](https://github.com/alexandervivas/personal-banking-be-java/actions/workflows/ci.yml)
 
 API for the multi‑tenant Personal Banking project. **Java 21**, **Spring Boot**, **Gradle**, **PostgreSQL**. Frontend work is out of scope for the current iterations; we’re focusing on a complete, secure, and stable API.
