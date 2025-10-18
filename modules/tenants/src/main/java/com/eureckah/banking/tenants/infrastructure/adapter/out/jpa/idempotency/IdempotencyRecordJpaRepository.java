@@ -7,5 +7,6 @@ import java.util.UUID;
 
 public interface IdempotencyRecordJpaRepository
         extends JpaRepository<IdempotencyRecordJpaEntity, UUID> {
-    Optional<IdempotencyRecordJpaEntity> findByRouteAndKey(String route, String key);
+    Optional<IdempotencyRecordJpaEntity> findByRouteAndKeyAndUserId(
+            String route, String key, UUID userId);
 }

@@ -53,14 +53,14 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
             UUID userId = UUID.fromString(IdempotencyContext.userId());
 
             // 1) Replay if we already have a final response
-            Optional<UUID> replayId = coordinator.findFinal(route, idempotencyKey);
+            Optional<UUID> replayId = coordinator.findFinal(route, idempotencyKey, userId);
             if (replayId.isPresent()) {
                 sendSuccess(replayId.get(), responseObserver);
                 return;
             }
 
             // 1b) Replay terminal failure if present
-            Optional<Integer> failure = coordinator.findFailure(route, idempotencyKey);
+            Optional<Integer> failure = coordinator.findFailure(route, idempotencyKey, userId);
             if (failure.isPresent()) {
                 responseObserver.onError(mapHttpStatusToGrpc(failure.get()).asRuntimeException());
                 return;
@@ -122,11 +122,14 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
                             .withDescription("x-user-id must be provided")
                             .asRuntimeException());
         } catch (InvalidCommandException ex) {
+            releaseIdempotencyKeyWithStatusCode(422);
             responseObserver.onError(
                     Status.INVALID_ARGUMENT
                             .withDescription("Invalid command: " + ex.getReason())
                             .asRuntimeException());
         } catch (FailedCommandException ex) {
+            // Persist terminal failure for operational errors too
+            releaseIdempotencyKeyWithStatusCode(500);
             responseObserver.onError(
                     Status.INTERNAL
                             .withDescription("Failed to process command")
@@ -134,6 +137,18 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
         } catch (Exception ex) {
             responseObserver.onError(
                     Status.UNKNOWN.withDescription("Unexpected error").asRuntimeException());
+        }
+    }
+
+    private void releaseIdempotencyKeyWithStatusCode(int statusCode) {
+        // Persist terminal failure so the idempotency key is released and future calls replay
+        // deterministically
+        try {
+            String key = IdempotencyContext.idempotencyKey();
+            UUID uid = UUID.fromString(IdempotencyContext.userId());
+            coordinator.markFailed(route(), key, uid, statusCode);
+        } catch (Exception ignore) {
+            // ignore any issues obtaining context or persisting failure
         }
     }
 

@@ -25,17 +25,17 @@ public class IdempotencyService {
 
     private final IdempotencyRecordJpaRepository repo;
 
-    public Optional<UUID> findFinalResourceId(String route, String key) {
+    public Optional<UUID> findFinalResourceId(String route, String key, UUID userId) {
         if (key == null) return Optional.empty();
-        return repo.findByRouteAndKey(route, key)
+        return repo.findByRouteAndKeyAndUserId(route, key, userId)
                 .filter(IdempotencyRecordJpaEntity::hasFinalResponse)
                 .map(r -> UUID.fromString(r.getResourceId()));
     }
 
     /** Return terminal failure status code if present. */
-    public Optional<Integer> findTerminalFailureStatus(String route, String key) {
+    public Optional<Integer> findTerminalFailureStatus(String route, String key, UUID userId) {
         if (key == null) return Optional.empty();
-        return repo.findByRouteAndKey(route, key)
+        return repo.findByRouteAndKeyAndUserId(route, key, userId)
                 .filter(IdempotencyRecordJpaEntity::hasTerminalFailure)
                 .map(IdempotencyRecordJpaEntity::getStatusCode);
     }
@@ -63,7 +63,8 @@ public class IdempotencyService {
      */
     public void markCreated(String route, String key, UUID userId, UUID resourceId) {
         if (key == null) return;
-        IdempotencyRecordJpaEntity record = repo.findByRouteAndKey(route, key).orElse(null);
+        IdempotencyRecordJpaEntity record =
+                repo.findByRouteAndKeyAndUserId(route, key, userId).orElse(null);
         if (record != null) {
             record.markCreated(resourceId);
             repo.save(record);
@@ -91,7 +92,8 @@ public class IdempotencyService {
     /** Persist a terminal failure for replaying errors and freeing the key. */
     public void markFailed(String route, String key, UUID userId, int statusCode) {
         if (key == null) return;
-        IdempotencyRecordJpaEntity record = repo.findByRouteAndKey(route, key).orElse(null);
+        IdempotencyRecordJpaEntity record =
+                repo.findByRouteAndKeyAndUserId(route, key, userId).orElse(null);
         if (record != null) {
             record.markFailed(statusCode);
             repo.save(record);

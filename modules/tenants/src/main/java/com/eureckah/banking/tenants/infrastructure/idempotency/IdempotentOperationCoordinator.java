@@ -55,20 +55,20 @@ public class IdempotentOperationCoordinator {
     private final IdempotencyService idempotencyService;
 
     /** Return previously finalized resource id if present. */
-    public Optional<UUID> findFinal(String route, String key) {
+    public Optional<UUID> findFinal(String route, String key, UUID userId) {
         if (key == null || key.isBlank()) {
             // No idempotency key provided -> behave as non-idempotent: nothing to replay
             return Optional.empty();
         }
-        return idempotencyService.findFinalResourceId(route, key);
+        return idempotencyService.findFinalResourceId(route, key, userId);
     }
 
     /** Return terminal failure status if present. */
-    public Optional<Integer> findFailure(String route, String key) {
+    public Optional<Integer> findFailure(String route, String key, UUID userId) {
         if (key == null || key.isBlank()) {
             return Optional.empty();
         }
-        return idempotencyService.findTerminalFailureStatus(route, key);
+        return idempotencyService.findTerminalFailureStatus(route, key, userId);
     }
 
     /**
@@ -88,15 +88,16 @@ public class IdempotentOperationCoordinator {
         // another request owns; poll for finalized result up to timeout
         long deadlineNanos = System.nanoTime() + timeout.toNanos();
         do {
-            var maybeFinal = idempotencyService.findFinalResourceId(route, key);
+            var maybeFinal = idempotencyService.findFinalResourceId(route, key, userId);
             if (maybeFinal.isPresent()) {
                 return AcquireOutcome.replay(maybeFinal.get());
             }
-            var maybeFailure = idempotencyService.findTerminalFailureStatus(route, key);
+            var maybeFailure = idempotencyService.findTerminalFailureStatus(route, key, userId);
             if (maybeFailure.isPresent()) {
                 return AcquireOutcome.failure(maybeFailure.get());
             }
             try {
+                //noinspection BusyWait
                 Thread.sleep(50);
             } catch (InterruptedException ie) {
                 Thread.currentThread().interrupt();

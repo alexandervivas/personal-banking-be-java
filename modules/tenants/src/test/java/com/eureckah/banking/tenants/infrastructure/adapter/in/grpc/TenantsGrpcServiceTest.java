@@ -68,7 +68,8 @@ public class TenantsGrpcServiceTest {
         AtomicReference<Throwable> errRef = new AtomicReference<>();
 
         String route = "tenants.createTenant.v1";
-        when(idempotencyRepo.findByRouteAndKey(route, "test-key")).thenReturn(Optional.empty());
+        when(idempotencyRepo.findByRouteAndKeyAndUserId(route, "test-key", userId))
+                .thenReturn(Optional.empty());
         when(idempotencyRepo.save(any(IdempotencyRecordJpaEntity.class)))
                 .thenAnswer(inv -> inv.getArgument(0));
 
@@ -170,26 +171,26 @@ public class TenantsGrpcServiceTest {
         // unit test.
         // Instead, we call private static Context keys through setting current context.
         String idemKey = UUID.randomUUID().toString();
-        String userId = UUID.randomUUID().toString();
+        UUID userId = UUID.randomUUID();
         String route = "tenants.createTenant.v1";
 
         var stored =
                 IdempotencyRecordJpaEntity.builder()
                         .route(route)
                         .key(idemKey)
-                        .userId(UUID.fromString(userId))
+                        .userId(userId)
                         .resourceId(UUID.randomUUID().toString())
                         .resourceType("TENANT")
                         .statusCode(201)
                         .build();
-        when(idempotencyRepo.findByRouteAndKey(route, idemKey))
+        when(idempotencyRepo.findByRouteAndKeyAndUserId(route, idemKey, userId))
                 .thenReturn(java.util.Optional.of(stored));
 
         // Build request
         CreateTenantRequest request = CreateTenantRequest.newBuilder().setName("Acme Corp").build();
 
         // Set up IdempotencyContext by attaching to current gRPC Context
-        Context ctx = IdempotencyContext.withValues(Context.current(), idemKey, userId);
+        Context ctx = IdempotencyContext.withValues(Context.current(), idemKey, userId.toString());
         AtomicReference<CreateTenantResponse> respRef = new AtomicReference<>();
         AtomicReference<Throwable> errRef = new AtomicReference<>();
 
@@ -242,7 +243,7 @@ public class TenantsGrpcServiceTest {
                         .userId(userId)
                         .build();
         //noinspection unchecked
-        when(idempotencyRepo.findByRouteAndKey(route, idemKey))
+        when(idempotencyRepo.findByRouteAndKeyAndUserId(route, idemKey, userId))
                 .thenReturn(Optional.empty(), Optional.of(placeholder));
         // Save returns the same entity passed so we can inspect captured values
         when(idempotencyRepo.save(any(IdempotencyRecordJpaEntity.class)))
@@ -301,7 +302,8 @@ public class TenantsGrpcServiceTest {
                 .thenReturn(Optional.empty());
 
         String route = "tenants.createTenant.v1";
-        when(idempotencyRepo.findByRouteAndKey(route, idemKey)).thenReturn(Optional.empty());
+        when(idempotencyRepo.findByRouteAndKeyAndUserId(route, idemKey, userId))
+                .thenReturn(Optional.empty());
         when(idempotencyRepo.save(any(IdempotencyRecordJpaEntity.class)))
                 .thenAnswer(inv -> inv.getArgument(0));
 
@@ -351,7 +353,7 @@ public class TenantsGrpcServiceTest {
 
         String route = "tenants.createTenant.v1";
         //noinspection unchecked
-        when(idempotencyRepo.findByRouteAndKey(route, idemKey))
+        when(idempotencyRepo.findByRouteAndKeyAndUserId(route, idemKey, userId))
                 .thenReturn(Optional.empty(), Optional.empty());
         // First save (placeholder) throws duplicate
         when(idempotencyRepo.save(any(IdempotencyRecordJpaEntity.class)))
@@ -388,5 +390,115 @@ public class TenantsGrpcServiceTest {
         // Only placeholder attempt occurred; mutation not executed; no final save
         verify(createTenantUseCase, never()).handle(any());
         verify(idempotencyRepo, times(1)).save(any(IdempotencyRecordJpaEntity.class));
+    }
+
+    @Test
+    void createTenant_useCaseThrowsInvalidCommand_marksFailureAndReturnsInvalidArgument() {
+        String idemKey = UUID.randomUUID().toString();
+        UUID userId = UUID.randomUUID();
+        User user = User.builder().id(userId).name("Alice").email("alice@example.com").build();
+
+        when(getUserUseCase.handle(any(GetUserQuery.class))).thenReturn(Optional.of(user));
+        when(createTenantUseCase.handle(any(CreateTenantCommand.class)))
+                .thenThrow(
+                        new com.eureckah.banking.tenants.application.exceptions
+                                .InvalidCommandException(
+                                com.eureckah.banking.tenants.application.commands
+                                        .CreateTenantCommand.class,
+                                "bad"));
+
+        String route = "tenants.createTenant.v1";
+        when(idempotencyRepo.findByRouteAndKeyAndUserId(route, idemKey, userId))
+                .thenReturn(Optional.empty());
+        when(idempotencyRepo.save(any(IdempotencyRecordJpaEntity.class)))
+                .thenAnswer(inv -> inv.getArgument(0));
+
+        CreateTenantRequest request = CreateTenantRequest.newBuilder().setName("Acme").build();
+        AtomicReference<Throwable> errRef = new AtomicReference<>();
+
+        Context ctx = IdempotencyContext.withValues(Context.current(), idemKey, userId.toString());
+        ctx.run(
+                () ->
+                        service.createTenant(
+                                request,
+                                new StreamObserver<>() {
+                                    @Override
+                                    public void onNext(CreateTenantResponse value) {}
+
+                                    @Override
+                                    public void onError(Throwable t) {
+                                        errRef.set(t);
+                                    }
+
+                                    @Override
+                                    public void onCompleted() {}
+                                }));
+
+        assertThat(errRef.get()).isInstanceOf(StatusRuntimeException.class);
+        StatusRuntimeException ex = (StatusRuntimeException) errRef.get();
+        assertThat(ex.getStatus().getCode().name()).isEqualTo("INVALID_ARGUMENT");
+
+        ArgumentCaptor<IdempotencyRecordJpaEntity> captor =
+                ArgumentCaptor.forClass(IdempotencyRecordJpaEntity.class);
+        verify(idempotencyRepo, times(2)).save(captor.capture());
+        var saved = captor.getAllValues();
+        assertThat(saved.get(0).getStatusCode()).isNull(); // placeholder
+        assertThat(saved.get(1).getStatusCode()).isEqualTo(422); // terminal failure
+        assertThat(saved.get(1).getResourceId()).isNull();
+    }
+
+    @Test
+    void createTenant_useCaseThrowsFailedCommand_marksFailureAndReturnsInternal() {
+        String idemKey = UUID.randomUUID().toString();
+        UUID userId = UUID.randomUUID();
+        User user = User.builder().id(userId).name("Alice").email("alice@example.com").build();
+
+        when(getUserUseCase.handle(any(GetUserQuery.class))).thenReturn(Optional.of(user));
+        when(createTenantUseCase.handle(any(CreateTenantCommand.class)))
+                .thenThrow(
+                        new com.eureckah.banking.tenants.application.exceptions
+                                .FailedCommandException(
+                                com.eureckah.banking.tenants.application.commands
+                                        .CreateTenantCommand.class,
+                                new RuntimeException("oops")));
+
+        String route = "tenants.createTenant.v1";
+        when(idempotencyRepo.findByRouteAndKeyAndUserId(route, idemKey, userId))
+                .thenReturn(Optional.empty());
+        when(idempotencyRepo.save(any(IdempotencyRecordJpaEntity.class)))
+                .thenAnswer(inv -> inv.getArgument(0));
+
+        CreateTenantRequest request = CreateTenantRequest.newBuilder().setName("Acme").build();
+        AtomicReference<Throwable> errRef = new AtomicReference<>();
+
+        Context ctx = IdempotencyContext.withValues(Context.current(), idemKey, userId.toString());
+        ctx.run(
+                () ->
+                        service.createTenant(
+                                request,
+                                new StreamObserver<>() {
+                                    @Override
+                                    public void onNext(CreateTenantResponse value) {}
+
+                                    @Override
+                                    public void onError(Throwable t) {
+                                        errRef.set(t);
+                                    }
+
+                                    @Override
+                                    public void onCompleted() {}
+                                }));
+
+        assertThat(errRef.get()).isInstanceOf(StatusRuntimeException.class);
+        StatusRuntimeException ex = (StatusRuntimeException) errRef.get();
+        assertThat(ex.getStatus().getCode().name()).isEqualTo("INTERNAL");
+
+        ArgumentCaptor<IdempotencyRecordJpaEntity> captor =
+                ArgumentCaptor.forClass(IdempotencyRecordJpaEntity.class);
+        verify(idempotencyRepo, times(2)).save(captor.capture());
+        var saved = captor.getAllValues();
+        assertThat(saved.get(0).getStatusCode()).isNull(); // placeholder
+        assertThat(saved.get(1).getStatusCode()).isEqualTo(500); // terminal failure
+        assertThat(saved.get(1).getResourceId()).isNull();
     }
 }

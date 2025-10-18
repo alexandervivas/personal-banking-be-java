@@ -20,8 +20,8 @@ import java.util.UUID;
         name = "idempotency_records",
         uniqueConstraints = {
             @UniqueConstraint(
-                    name = "uq_idem_route_key",
-                    columnNames = {"route", "key"})
+                    name = "uq_idem_route_key_user",
+                    columnNames = {"route", "key", "user_id"})
         })
 public class IdempotencyRecordJpaEntity {
 
