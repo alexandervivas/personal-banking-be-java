@@ -10,6 +10,7 @@ import com.eureckah.banking.tenants.domain.events.TenantCreated;
 import com.eureckah.banking.tenants.domain.model.Profile;
 import com.eureckah.banking.tenants.domain.model.Role;
 import com.eureckah.banking.tenants.domain.model.Tenant;
+import com.eureckah.banking.tenants.domain.value.TenantSnapshot;
 
 import jakarta.transaction.Transactional;
 
@@ -40,13 +41,15 @@ public class CreateTenantCommandHandler implements CreateTenantUseCase {
         TenantView tenantView = TenantMapper.toView(tenant, command.user().getId());
 
         createTenantOwner(command, tenant);
-        notifyTenantCreation(tenantView);
+        TenantSnapshot snapshot =
+                new TenantSnapshot(tenant.getId(), tenant.getName(), command.user().getId());
+        notifyTenantCreation(snapshot);
 
         return Optional.of(tenant.getId());
     }
 
-    private void notifyTenantCreation(TenantView tenantView) {
-        eventsPublisher.publishTenantEvent(new TenantCreated(tenantView));
+    private void notifyTenantCreation(TenantSnapshot snapshot) {
+        eventsPublisher.publishTenantEvent(new TenantCreated(snapshot));
     }
 
     private Tenant createTenant(CreateTenantCommand command) {

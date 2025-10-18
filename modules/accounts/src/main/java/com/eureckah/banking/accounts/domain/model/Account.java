@@ -1,4 +1,4 @@
-package com.eureckah.banking.accounts.domain;
+package com.eureckah.banking.accounts.domain.model;
 
 import com.eureckah.banking.shared.model.CurrencyCode;
 

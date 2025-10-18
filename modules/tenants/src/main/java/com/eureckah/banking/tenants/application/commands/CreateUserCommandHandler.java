@@ -7,6 +7,7 @@ import com.eureckah.banking.tenants.application.port.out.messaging.TenantEventsP
 import com.eureckah.banking.tenants.application.port.out.storage.UserRepository;
 import com.eureckah.banking.tenants.domain.events.UserCreated;
 import com.eureckah.banking.tenants.domain.model.User;
+import com.eureckah.banking.tenants.domain.value.UserSnapshot;
 
 import jakarta.transaction.Transactional;
 
@@ -31,12 +32,13 @@ public class CreateUserCommandHandler implements CreateUserUseCase {
     public Optional<UUID> handle(CreateUserCommand command) {
         User user = createUser(command);
         UserView userView = UserMapper.toView(user);
-        notifyUserCreation(userView);
+        UserSnapshot snapshot = new UserSnapshot(user.getId(), user.getName(), user.getEmail());
+        notifyUserCreation(snapshot);
         return Optional.of(user.getId());
     }
 
-    private void notifyUserCreation(UserView userView) {
-        eventsPublisher.publishTenantEvent(new UserCreated(userView));
+    private void notifyUserCreation(UserSnapshot user) {
+        eventsPublisher.publishTenantEvent(new UserCreated(user));
     }
 
     private User createUser(CreateUserCommand command) {

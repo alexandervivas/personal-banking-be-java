@@ -1,11 +1,11 @@
 package com.eureckah.banking.tenants.infrastructure.adapter.out.messaging;
 
-import com.eureckah.banking.tenants.application.dto.TenantView;
-import com.eureckah.banking.tenants.application.dto.UserView;
 import com.eureckah.banking.tenants.application.port.out.messaging.TenantEventsPublisher;
 import com.eureckah.banking.tenants.domain.events.TenantCreated;
 import com.eureckah.banking.tenants.domain.events.TenantEvent;
 import com.eureckah.banking.tenants.domain.events.UserCreated;
+import com.eureckah.banking.tenants.domain.value.TenantSnapshot;
+import com.eureckah.banking.tenants.domain.value.UserSnapshot;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -82,31 +82,31 @@ public class TenantRabbitMQPublisher implements TenantEventsPublisher {
             if (event instanceof TenantCreated tc) {
                 Schema schema = loadSchema("contracts/events/v1/tenant-created.avsc");
                 GenericRecord record = new GenericData.Record(schema);
-                TenantView tv = tc.tenant();
+                TenantSnapshot ts = tc.tenant();
                 String id = java.util.UUID.randomUUID().toString();
                 String time = java.time.Instant.now().toString();
                 record.put("eventId", id);
                 record.put("occurredAt", time);
-                record.put("tenantId", tv.id().toString());
-                record.put("name", tv.name());
-                record.put("ownerId", tv.ownerId().toString());
+                record.put("tenantId", ts.id().toString());
+                record.put("name", ts.name());
+                record.put("ownerId", ts.ownerId().toString());
                 byte[] bytes = serialize(schema, record);
                 return new EventPayload(
-                        "tenant.created.v1", schema, bytes, id, time, tv.id().toString());
+                        "tenant.created.v1", schema, bytes, id, time, ts.id().toString());
             } else if (event instanceof UserCreated uc) {
                 Schema schema = loadSchema("contracts/events/v1/user-created.avsc");
                 GenericRecord record = new GenericData.Record(schema);
-                UserView uv = uc.userView();
+                UserSnapshot us = uc.user();
                 String id = java.util.UUID.randomUUID().toString();
                 String time = java.time.Instant.now().toString();
                 record.put("eventId", id);
                 record.put("occurredAt", time);
-                record.put("userId", uv.id().toString());
-                record.put("name", uv.name());
-                record.put("email", uv.email());
+                record.put("userId", us.id().toString());
+                record.put("name", us.name());
+                record.put("email", us.email());
                 byte[] bytes = serialize(schema, record);
                 return new EventPayload(
-                        "user.created.v1", schema, bytes, id, time, uv.id().toString());
+                        "user.created.v1", schema, bytes, id, time, us.id().toString());
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to serialize event to Avro", e);
