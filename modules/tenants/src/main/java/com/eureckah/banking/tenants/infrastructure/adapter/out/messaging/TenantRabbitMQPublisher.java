@@ -4,8 +4,8 @@ import com.eureckah.banking.tenants.application.port.out.messaging.TenantEventsP
 import com.eureckah.banking.tenants.domain.events.TenantCreated;
 import com.eureckah.banking.tenants.domain.events.TenantEvent;
 import com.eureckah.banking.tenants.domain.events.UserCreated;
-import com.eureckah.banking.tenants.domain.value.TenantSnapshot;
-import com.eureckah.banking.tenants.domain.value.UserSnapshot;
+import com.eureckah.banking.tenants.domain.values.TenantSnapshot;
+import com.eureckah.banking.tenants.domain.values.UserSnapshot;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;

@@ -1,5 +1,5 @@
 package com.eureckah.banking.accounts.domain.events;
 
-import java.util.UUID;
+import com.eureckah.banking.accounts.domain.values.AccountSnapshot;
 
-public record AccountCreated(UUID id) {}
+public record AccountCreated(AccountSnapshot snapshot) {}

@@ -10,7 +10,7 @@ import com.eureckah.banking.tenants.application.port.out.storage.TenantRepositor
 import com.eureckah.banking.tenants.domain.events.TenantCreated;
 import com.eureckah.banking.tenants.domain.model.Tenant;
 import com.eureckah.banking.tenants.domain.model.User;
-import com.eureckah.banking.tenants.domain.value.TenantSnapshot;
+import com.eureckah.banking.tenants.domain.values.TenantSnapshot;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

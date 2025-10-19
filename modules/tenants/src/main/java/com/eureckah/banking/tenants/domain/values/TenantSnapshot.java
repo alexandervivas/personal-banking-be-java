@@ -1,4 +1,4 @@
-package com.eureckah.banking.tenants.domain.value;
+package com.eureckah.banking.tenants.domain.values;
 
 import java.util.UUID;
 

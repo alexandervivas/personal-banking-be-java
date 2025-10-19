@@ -7,7 +7,7 @@ import com.eureckah.banking.tenants.application.port.out.messaging.TenantEventsP
 import com.eureckah.banking.tenants.application.port.out.storage.UserRepository;
 import com.eureckah.banking.tenants.domain.events.UserCreated;
 import com.eureckah.banking.tenants.domain.model.User;
-import com.eureckah.banking.tenants.domain.value.UserSnapshot;
+import com.eureckah.banking.tenants.domain.values.UserSnapshot;
 
 import jakarta.transaction.Transactional;
 

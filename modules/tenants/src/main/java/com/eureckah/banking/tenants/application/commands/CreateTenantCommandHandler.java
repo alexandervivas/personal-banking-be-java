@@ -10,7 +10,7 @@ import com.eureckah.banking.tenants.domain.events.TenantCreated;
 import com.eureckah.banking.tenants.domain.model.Profile;
 import com.eureckah.banking.tenants.domain.model.Role;
 import com.eureckah.banking.tenants.domain.model.Tenant;
-import com.eureckah.banking.tenants.domain.value.TenantSnapshot;
+import com.eureckah.banking.tenants.domain.values.TenantSnapshot;
 
 import jakarta.transaction.Transactional;
 
