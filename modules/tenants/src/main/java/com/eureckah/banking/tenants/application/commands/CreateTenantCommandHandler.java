@@ -37,12 +37,12 @@ public class CreateTenantCommandHandler implements CreateTenantUseCase {
         Tenant tenant = createTenant(command);
 
         createTenantOwner(command, tenant);
-        notifyTenantCreation(command, tenant);
+        publishTenantCreation(command, tenant);
 
         return Optional.of(tenant.getId());
     }
 
-    private void notifyTenantCreation(CreateTenantCommand command, Tenant tenant) {
+    private void publishTenantCreation(CreateTenantCommand command, Tenant tenant) {
         TenantSnapshot snapshot =
                 new TenantSnapshot(tenant.getId(), tenant.getName(), command.user().getId());
         eventsPublisher.publish(new TenantCreated(snapshot));
