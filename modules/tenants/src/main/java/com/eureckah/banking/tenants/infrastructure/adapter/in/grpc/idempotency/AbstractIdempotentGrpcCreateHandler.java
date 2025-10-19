@@ -136,6 +136,7 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
                             .withDescription("Failed to process command")
                             .asRuntimeException());
         } catch (Exception ex) {
+            releaseIdempotencyKeyWithStatusCode(500);
             responseObserver.onError(
                     Status.UNKNOWN.withDescription("Unexpected error").asRuntimeException());
         }
