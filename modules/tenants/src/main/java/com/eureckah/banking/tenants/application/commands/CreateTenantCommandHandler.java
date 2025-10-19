@@ -1,7 +1,5 @@
 package com.eureckah.banking.tenants.application.commands;
 
-import com.eureckah.banking.tenants.application.dto.TenantView;
-import com.eureckah.banking.tenants.application.mappers.TenantMapper;
 import com.eureckah.banking.tenants.application.port.in.CreateTenantUseCase;
 import com.eureckah.banking.tenants.application.port.out.messaging.TenantEventsPublisher;
 import com.eureckah.banking.tenants.application.port.out.storage.ProfileRepository;
@@ -12,9 +10,8 @@ import com.eureckah.banking.tenants.domain.model.Role;
 import com.eureckah.banking.tenants.domain.model.Tenant;
 import com.eureckah.banking.tenants.domain.values.TenantSnapshot;
 
-import jakarta.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -38,18 +35,17 @@ public class CreateTenantCommandHandler implements CreateTenantUseCase {
     @Transactional
     public Optional<UUID> handle(CreateTenantCommand command) {
         Tenant tenant = createTenant(command);
-        TenantView tenantView = TenantMapper.toView(tenant, command.user().getId());
 
         createTenantOwner(command, tenant);
-        TenantSnapshot snapshot =
-                new TenantSnapshot(tenant.getId(), tenant.getName(), command.user().getId());
-        notifyTenantCreation(snapshot);
+        notifyTenantCreation(command, tenant);
 
         return Optional.of(tenant.getId());
     }
 
-    private void notifyTenantCreation(TenantSnapshot snapshot) {
-        eventsPublisher.publishTenantEvent(new TenantCreated(snapshot));
+    private void notifyTenantCreation(CreateTenantCommand command, Tenant tenant) {
+        TenantSnapshot snapshot =
+                new TenantSnapshot(tenant.getId(), tenant.getName(), command.user().getId());
+        eventsPublisher.publish(new TenantCreated(snapshot));
     }
 
     private Tenant createTenant(CreateTenantCommand command) {

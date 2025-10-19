@@ -61,7 +61,7 @@ public class CreateTenantCommandHandlerTest {
         verify(profileRepository, times(1)).save(any());
 
         ArgumentCaptor<TenantCreated> eventCaptor = ArgumentCaptor.forClass(TenantCreated.class);
-        verify(eventsPublisher).publishTenantEvent(eventCaptor.capture());
+        verify(eventsPublisher).publish(eventCaptor.capture());
         TenantCreated published = eventCaptor.getValue();
         TenantSnapshot snapshot = published.tenant();
         assertThat(snapshot.id()).isEqualTo(generatedId);

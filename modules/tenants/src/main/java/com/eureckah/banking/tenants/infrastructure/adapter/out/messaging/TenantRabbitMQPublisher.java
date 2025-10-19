@@ -45,7 +45,7 @@ public class TenantRabbitMQPublisher implements TenantEventsPublisher {
     }
 
     @Override
-    public void publishTenantEvent(TenantEvent event) {
+    public void publish(TenantEvent event) {
         EventPayload payload = toAvroPayload(event);
         String exchange = config.exchangePrefix() + payload.name;
 

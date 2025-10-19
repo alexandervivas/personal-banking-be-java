@@ -38,7 +38,7 @@ public class CreateUserCommandHandler implements CreateUserUseCase {
     }
 
     private void notifyUserCreation(UserSnapshot user) {
-        eventsPublisher.publishTenantEvent(new UserCreated(user));
+        eventsPublisher.publish(new UserCreated(user));
     }
 
     private User createUser(CreateUserCommand command) {

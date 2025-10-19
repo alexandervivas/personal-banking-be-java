@@ -426,6 +426,9 @@ components:
           type: string
         type:
           type: string
+          enum: [CHECKING, SAVINGS]
+        name:
+          type: string
         currency:
           type: string
           enum: [USD, EUR, COP]
@@ -440,6 +443,9 @@ components:
         tenantId:
           type: string
         type:
+          type: string
+          enum: [CHECKING, SAVINGS]
+        name:
           type: string
         currency:
           type: string
