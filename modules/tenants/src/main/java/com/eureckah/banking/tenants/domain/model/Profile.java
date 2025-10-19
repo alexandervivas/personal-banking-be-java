@@ -7,7 +7,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class Profile {
+public final class Profile {
 
     private UUID id;
 

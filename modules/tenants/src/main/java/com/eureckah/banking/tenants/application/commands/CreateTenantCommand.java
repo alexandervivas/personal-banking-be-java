@@ -1,5 +1,6 @@
 package com.eureckah.banking.tenants.application.commands;
 
+import com.eureckah.banking.shared.application.commands.Command;
 import com.eureckah.banking.tenants.domain.model.User;
 
 public record CreateTenantCommand(String name, User user) implements Command {

@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.grpc.server.service.GrpcService;
 
-@GrpcService
+@GrpcService(interceptors = {IdempotencyServerInterceptor.class})
 @Slf4j
 public class UsersGrpcService extends UsersServiceGrpc.UsersServiceImplBase {
 

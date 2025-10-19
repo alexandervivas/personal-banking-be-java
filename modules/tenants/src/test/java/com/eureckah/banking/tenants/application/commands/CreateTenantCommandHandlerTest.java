@@ -4,13 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import com.eureckah.banking.tenants.application.dto.TenantView;
 import com.eureckah.banking.tenants.application.port.out.messaging.TenantEventsPublisher;
 import com.eureckah.banking.tenants.application.port.out.storage.ProfileRepository;
 import com.eureckah.banking.tenants.application.port.out.storage.TenantRepository;
 import com.eureckah.banking.tenants.domain.events.TenantCreated;
 import com.eureckah.banking.tenants.domain.model.Tenant;
 import com.eureckah.banking.tenants.domain.model.User;
+import com.eureckah.banking.tenants.domain.values.TenantSnapshot;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,11 +61,11 @@ public class CreateTenantCommandHandlerTest {
         verify(profileRepository, times(1)).save(any());
 
         ArgumentCaptor<TenantCreated> eventCaptor = ArgumentCaptor.forClass(TenantCreated.class);
-        verify(eventsPublisher).publishTenantEvent(eventCaptor.capture());
+        verify(eventsPublisher).publish(eventCaptor.capture());
         TenantCreated published = eventCaptor.getValue();
-        TenantView view = published.tenant();
-        assertThat(view.id()).isEqualTo(generatedId);
-        assertThat(view.ownerId()).isEqualTo(user.getId());
-        assertThat(view.name()).isEqualTo("Acme Corp");
+        TenantSnapshot snapshot = published.tenant();
+        assertThat(snapshot.id()).isEqualTo(generatedId);
+        assertThat(snapshot.ownerId()).isEqualTo(user.getId());
+        assertThat(snapshot.name()).isEqualTo("Acme Corp");
     }
 }

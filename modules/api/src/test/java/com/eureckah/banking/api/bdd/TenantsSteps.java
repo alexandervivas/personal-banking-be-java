@@ -60,6 +60,5 @@ public class TenantsSteps {
 
         var lastReq = FakeTenantsServer.getLastCreateRequest();
         assertThat("gRPC server should have received a request", lastReq, notNullValue());
-        assertThat(lastReq.getUserId(), is(simulatedUserId));
     }
 }

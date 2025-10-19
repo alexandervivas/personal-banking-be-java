@@ -1,6 +1,6 @@
-package com.eureckah.banking.tenants.application.port.in;
+package com.eureckah.banking.shared.application.port.in;
 
-import com.eureckah.banking.tenants.application.commands.Command;
+import com.eureckah.banking.shared.application.commands.Command;
 
 import java.util.Optional;
 import java.util.UUID;

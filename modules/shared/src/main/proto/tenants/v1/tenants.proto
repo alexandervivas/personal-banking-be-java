@@ -12,8 +12,6 @@ service TenantsService {
 
 message CreateTenantRequest {
   string name = 1;
-  // The ID of the user making the request; will become the tenant owner
-  string user_id = 2; // UUID as string
 }
 
 message CreateTenantResponse {

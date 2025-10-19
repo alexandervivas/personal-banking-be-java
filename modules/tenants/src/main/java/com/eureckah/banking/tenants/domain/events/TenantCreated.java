@@ -1,5 +1,5 @@
 package com.eureckah.banking.tenants.domain.events;
 
-import com.eureckah.banking.tenants.application.dto.TenantView;
+import com.eureckah.banking.tenants.domain.values.TenantSnapshot;
 
-public record TenantCreated(TenantView tenant) implements TenantEvent {}
+public record TenantCreated(TenantSnapshot tenant) implements TenantEvent {}

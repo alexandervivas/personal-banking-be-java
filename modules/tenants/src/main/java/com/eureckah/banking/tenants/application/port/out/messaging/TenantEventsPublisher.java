@@ -4,5 +4,5 @@ import com.eureckah.banking.tenants.domain.events.TenantEvent;
 
 public interface TenantEventsPublisher {
 
-    void publishTenantEvent(TenantEvent event);
+    void publish(TenantEvent event);
 }
