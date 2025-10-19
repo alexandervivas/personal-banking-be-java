@@ -50,7 +50,17 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
         try {
             String idempotencyKey = IdempotencyContext.idempotencyKey();
             String route = route();
-            UUID userId = UUID.fromString(IdempotencyContext.userId());
+            String rawUserId = IdempotencyContext.userId();
+            if (rawUserId == null || rawUserId.isBlank()) {
+                releaseIdempotencyKeyWithStatusCode(400);
+                responseObserver.onError(
+                        Status.INVALID_ARGUMENT
+                                .withDescription("x-user-id must be provided")
+                                .asRuntimeException());
+                return;
+            }
+
+            UUID userId = UUID.fromString(rawUserId);
 
             // 1) Replay if we already have a final response
             Optional<UUID> replayId = coordinator.findFinal(route, idempotencyKey, userId);
@@ -147,7 +157,12 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
         // deterministically
         try {
             String key = IdempotencyContext.idempotencyKey();
-            UUID uid = UUID.fromString(IdempotencyContext.userId());
+            String rawUserId = IdempotencyContext.userId();
+            if (rawUserId == null || rawUserId.isBlank()) {
+                return;
+            }
+
+            UUID uid = UUID.fromString(rawUserId);
             coordinator.markFailed(route(), key, uid, statusCode);
         } catch (Exception ignore) {
             // ignore any issues obtaining context or persisting failure
