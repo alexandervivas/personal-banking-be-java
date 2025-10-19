@@ -8,9 +8,12 @@ import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.hibernate.exception.ConstraintViolationException;
+import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -52,10 +55,44 @@ public class IdempotencyService {
                             .userId(userId)
                             .build();
             return Optional.of(repo.save(record));
-        } catch (DataIntegrityViolationException | EntityExistsException dup) {
+        } catch (EntityExistsException dup) {
             // Another request inserted first; let caller continue
             return Optional.empty();
+        } catch (DataIntegrityViolationException dive) {
+            if (isDuplicateKeyViolation(dive)) {
+                // Another request inserted first; let caller continue
+                return Optional.empty();
+            }
+            throw dive;
         }
+    }
+
+    private boolean isDuplicateKeyViolation(Throwable error) {
+        Throwable current = error;
+        while (current != null) {
+            if (current instanceof ConstraintViolationException constraint) {
+                SQLException sqlException = constraint.getSQLException();
+                if (isDuplicateSqlState(sqlException)) {
+                    return true;
+                }
+            }
+            if (current instanceof PSQLException psql) {
+                if (isDuplicateSqlState(psql)) {
+                    return true;
+                }
+            }
+            if (current instanceof SQLException sqlException) {
+                if (isDuplicateSqlState(sqlException)) {
+                    return true;
+                }
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private boolean isDuplicateSqlState(SQLException exception) {
+        return exception != null && "23505".equals(exception.getSQLState());
     }
 
     /**
