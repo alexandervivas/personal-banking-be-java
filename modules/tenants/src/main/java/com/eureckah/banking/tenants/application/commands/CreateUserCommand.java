@@ -1,5 +1,7 @@
 package com.eureckah.banking.tenants.application.commands;
 
+import com.eureckah.banking.shared.application.commands.Command;
+
 public record CreateUserCommand(String name, String email) implements Command {
     public CreateUserCommand {
         if (name == null || name.isBlank()) {

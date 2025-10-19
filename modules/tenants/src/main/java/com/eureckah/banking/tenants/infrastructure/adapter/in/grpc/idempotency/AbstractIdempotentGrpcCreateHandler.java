@@ -121,11 +121,11 @@ public abstract class AbstractIdempotentGrpcCreateHandler<Req, Resp> {
                 return;
             }
 
-            // 5) Persist final response
-            coordinator.markCreated(route, idempotencyKey, userId, createdId.get());
-
-            // 6) Send success
+            // 5) Send success
             sendSuccess(createdId.get(), responseObserver);
+
+            // 6) Persist final response
+            coordinator.markCreated(route, idempotencyKey, userId, createdId.get());
         } catch (IllegalArgumentException ex) {
             releaseIdempotencyKeyWithStatusCode(400);
             responseObserver.onError(
